@@ -2,13 +2,14 @@
   "name": "optimusimg",
   "version": "1.0.0",
   "description": "A Node.js module for optimizing images in build and runtime",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build:javascript-version": "rimraf build && tsc",
+    "build:production-runtime": "rimraf dist && webpack -p",
     "test": "jest --coverage",
     "lint": "tslint --project \"tsconfig.json\"",
-    "prepare-for-commit": "npm run lint && npm run test && npm run build",
+    "prepare-for-release": "rimraf build && rimraf dist && npm run lint && npm run test && npm run build:javascript-version && npm run build:production-runtime",
     "commit": "git-cz"
   },
   "repository": {
@@ -41,8 +42,11 @@
     "jest": "^23.5.0",
     "rimraf": "^2.6.2",
     "ts-jest": "^23.1.4",
+    "ts-loader": "^4.5.0",
     "tslint": "^5.11.0",
-    "typescript": "^3.0.1"
+    "typescript": "^3.0.1",
+    "webpack": "^4.17.0",
+    "webpack-cli": "^3.1.0"
   },
   "jest": {
     "transform": {

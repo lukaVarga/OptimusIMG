@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "sourceMap": false,
+    "outDir": "/",
+    "declaration": false
+  },
+  "include": [
+    "src/runtime/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "__tests__/**/*",
+    "src/buildtime/**/*"
+  ]
+}
