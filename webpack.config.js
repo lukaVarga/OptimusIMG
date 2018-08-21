@@ -27,7 +27,7 @@ module.exports = {
 		extensions: [ '.tsx', '.ts', '.js' ]
 	},
 	output: {
-		filename: 'OptimusIMG-bundle.min.js',
+		filename: 'OptimusIMG.min.js',
 		path: path.resolve(__dirname, 'dist'),
 		library: 'OptimusIMG'
 	}
