@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-	entry: './src/runtime/index.runtime.ts',
+	entry: './src/runtime/index.ts',
 	module: {
 		rules: [
 			{
