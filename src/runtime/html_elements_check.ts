@@ -62,11 +62,11 @@ export default class HtmlElementsCheck {
                                     'and (max-width: 800px) 20em, 1000px"';
                             }
 
-                            text = 'image ' + attribute.attribute_name + ' property has an unexpected value. ' +
+                            text = 'image ' + attribute.attribute_name + ' attribute has an unexpected value. ' +
                                 'Expected value format is ' + expectedFormat;
                             break;
                         case 'one_size_only':
-                            text = 'image ' + attribute.attribute_name + ' property should target multiple image dimensions ' +
+                            text = 'image ' + attribute.attribute_name + ' attribute should target multiple image dimensions ' +
                                 'for different screens. ';
                             break;
                     }

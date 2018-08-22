@@ -34,7 +34,7 @@ describe('HtmlElementsCheck', () => {
                         const FAULTS: IImageSourceResponsivenessFault = {attribute_name: 'srcset', fault: 'value_format'};
                         HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: false, faults: [FAULTS]});
 
-                        const EXPECTED_TEXT: string = consoleMessage('image srcset property has an unexpected value. ' +
+                        const EXPECTED_TEXT: string = consoleMessage('image srcset attribute has an unexpected value. ' +
                             'Expected value format is image-name.format image-size - where image size is eg. 150w, 500w or eg. 1x, 2x, 5x. ' +
                             'For example: srcset="beautiful-image-150.jpeg 150w, beautiful-image@2x.jpeg 2x"');
 
@@ -48,7 +48,7 @@ describe('HtmlElementsCheck', () => {
                         const FAULTS: IImageSourceResponsivenessFault = {attribute_name: 'sizes', fault: 'value_format'};
                         HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: false, faults: [FAULTS]});
 
-                        const EXPECTED_TEXT: string = consoleMessage('image sizes property has an unexpected value. ' +
+                        const EXPECTED_TEXT: string = consoleMessage('image sizes attribute has an unexpected value. ' +
                             'Expected value format is (optional css-media-query) image-size - where image size is eg. 150px, 20em, 20rem, 80vw. ' +
                             'For example: sizes="(min-width: 300px) 80vw, (min-width: 300px) and (max-width: 800px) 20em, 1000px"');
 
@@ -62,7 +62,7 @@ describe('HtmlElementsCheck', () => {
                         const FAULTS: IImageSourceResponsivenessFault = {attribute_name: 'sizes', fault: 'one_size_only'};
                         HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: false, faults: [FAULTS]});
 
-                        const EXPECTED_TEXT: string = consoleMessage('image sizes property should target multiple image dimensions ' +
+                        const EXPECTED_TEXT: string = consoleMessage('image sizes attribute should target multiple image dimensions ' +
                             'for different screens. ');
 
                         new HtmlElementsCheck();
