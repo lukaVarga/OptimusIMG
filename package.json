@@ -8,7 +8,7 @@
     "build:javascript-version": "rimraf build && tsc",
     "build:production-runtime": "rimraf dist && webpack -p",
     "test": "jest --coverage",
-    "lint": "tslint --project \"tsconfig.json\"",
+    "lint": "tslint --project \"tsconfig.lint.json\"",
     "prepare-for-release": "rimraf build && rimraf dist && npm run lint && npm run test && npm run build:javascript-version && npm run build:production-runtime",
     "commit": "git-cz"
   },

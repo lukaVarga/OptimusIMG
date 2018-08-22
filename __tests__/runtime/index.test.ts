@@ -5,7 +5,7 @@ import HtmlElementsCheck from '../../src/runtime/html_elements_check';
 describe('RUNTIME', () => {
     test('inclusion of all runtime codebase', () => {
         const EXPECTED_RUNTIME: IRuntime = {
-            ElementsCheck: expect.any(Function)
+            ElementsCheck: expect.any(Function),
         };
 
         expect(RUNTIME).toMatchObject(EXPECTED_RUNTIME);
