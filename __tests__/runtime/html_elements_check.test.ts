@@ -1,6 +1,8 @@
 import { default as HtmlElementsCheck } from '../../src/runtime/html_elements_check';
-import { consoleMessage } from '../../src/runtime/helpers/console';
+import { consoleMessage } from '../../src/runtime/helpers/console.helpers';
 import { IHtmlElementsCheck } from '../../src/runtime/interfaces/html_elements_check.interface';
+import { HtmlElementsHelpers } from '../../src/runtime/helpers/html_elements.helpers';
+import { IImageSourceResponsivenessFault } from '../../src/runtime/helpers/interfaces/html_elements.helpers.interface';
 
 describe('HtmlElementsCheck', () => {
     describe('default configuration', () => {
@@ -22,51 +24,112 @@ describe('HtmlElementsCheck', () => {
                         '</div>';
                 });
 
-                test('image dimensions 0', () => {
-                    const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
-                    IMAGE.height = 0;
-                    IMAGE.width = 0;
+                describe('image does not have valid responsiveness properties', () => {
+                    beforeEach(() => {
+                        HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: false});
+                    });
 
-                    new HtmlElementsCheck();
+                    test('invalid srcset format', () => {
+                        const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
+                        const FAULTS: IImageSourceResponsivenessFault = {attribute_name: 'srcset', fault: 'value_format'};
+                        HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: false, faults: [FAULTS]});
 
-                    expect(console.warn).not.toBeCalled();
+                        const EXPECTED_TEXT = consoleMessage('image srcset property has an unexpected value. ' +
+                            'Expected value format is image-name.format image-size - where image size is eg. 150w, 500w or eg. 1x, 2x, 5x. ' +
+                            'For example: srcset="beautiful-image-150.jpeg 150w, beautiful-image@2x.jpeg 2x"');
+
+                        new HtmlElementsCheck();
+
+                        expect(console.warn).toBeCalledWith(EXPECTED_TEXT, IMAGE);
+                    });
+
+                    test('invalid sizes format', () => {
+                        const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
+                        const FAULTS: IImageSourceResponsivenessFault = {attribute_name: 'sizes', fault: 'value_format'};
+                        HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: false, faults: [FAULTS]});
+
+                        const EXPECTED_TEXT = consoleMessage('image sizes property has an unexpected value. ' +
+                            'Expected value format is (optional css-media-query) image-size - where image size is eg. 150px, 20em, 20rem, 80vw. ' +
+                            'For example: sizes="(min-width: 300px) 80vw, (min-width: 300px) and (max-width: 800px) 20em, 1000px"');
+
+                        new HtmlElementsCheck();
+
+                        expect(console.warn).toBeCalledWith(EXPECTED_TEXT, IMAGE);
+                    });
+
+                    test('sizes attribute configured for one image version only', () => {
+                        const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
+                        const FAULTS: IImageSourceResponsivenessFault = {attribute_name: 'sizes', fault: 'one_size_only'};
+                        HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: false, faults: [FAULTS]});
+
+                        const EXPECTED_TEXT = consoleMessage('image sizes property should target multiple image dimensions ' +
+                            'for different screens. ');
+
+                        new HtmlElementsCheck();
+
+                        expect(console.warn).toBeCalledWith(EXPECTED_TEXT, IMAGE);
+                    });
+
+                    test('image dimensions 0', () => {
+                        const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
+                        IMAGE.height = 0;
+                        IMAGE.width = 0;
+
+                        new HtmlElementsCheck();
+
+                        expect(console.warn).not.toBeCalled();
+                    });
+
+                    test('image much larger than original size', () => {
+                        const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
+                        IMAGE.height = 100;
+                        IMAGE.width = 100;
+
+                        const EXPECTED_TEXT = consoleMessage('the following image has been expanded by 300%. ' +
+                            'We suggest you provide different resolutions of the image for different screen sizes and utilize the HTML picture element.');
+
+                        new HtmlElementsCheck();
+
+                        expect(console.warn).toBeCalledWith(EXPECTED_TEXT, IMAGE);
+                    });
+
+                    test('image much smaller than original size', () => {
+                        const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
+                        IMAGE.height = 10;
+                        IMAGE.width = 10;
+
+                        const EXPECTED_TEXT = consoleMessage('the following image size is 96% smaller than the original. ' +
+                            'You could save up to 96% in load time of this image. ' +
+                            'We suggest you provide different resolutions of the image for different screen sizes and utilize the HTML picture element.');
+
+                        new HtmlElementsCheck();
+
+                        expect(console.warn).toBeCalledWith(EXPECTED_TEXT, IMAGE);
+                    });
+
+                    test('image size within acceptable limits of original size', () => {
+                        const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
+                        IMAGE.height = 55;
+                        IMAGE.width = 55;
+
+                        new HtmlElementsCheck();
+
+                        expect(console.warn).not.toBeCalled();
+                    });
                 });
 
-                test('image much larger than original size', () => {
-                    const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
-                    IMAGE.height = 100;
-                    IMAGE.width = 100;
 
-                    const EXPECTED_TEXT = consoleMessage('the following image has been expanded by 300%. ' +
-                        'We suggest you provide different resolutions of the image for different screen sizes and utilize the HTML picture element.');
+                describe('image has valid responsive properties', () => {
+                    test('image much smaller than original size', () => {
+                        HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: true});
+                        const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
+                        IMAGE.height = 10;
+                        IMAGE.width = 10;
 
-                    new HtmlElementsCheck();
+                        new HtmlElementsCheck();
 
-                    expect(console.warn).toBeCalledWith(EXPECTED_TEXT, IMAGE)
-                });
-
-                test('image much smaller than original size', () => {
-                    const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
-                    IMAGE.height = 10;
-                    IMAGE.width = 10;
-
-                    const EXPECTED_TEXT = consoleMessage('the following image size is 96% smaller than the original. ' +
-                        'You could save up to 96% in load time of this image. ' +
-                        'We suggest you provide different resolutions of the image for different screen sizes and utilize the HTML picture element.');
-
-                    new HtmlElementsCheck();
-
-                    expect(console.warn).toBeCalledWith(EXPECTED_TEXT, IMAGE)
-                });
-
-                test('image size within acceptable limits of original size', () => {
-                    const IMAGE: HTMLImageElement = document.querySelector('img.optimusIMG') as HTMLImageElement;
-                    IMAGE.height = 55;
-                    IMAGE.width = 55;
-
-                    new HtmlElementsCheck();
-
-                    expect(console.warn).not.toBeCalled()
+                        expect(console.warn).not.toBeCalled();
+                    });
                 });
             });
 
@@ -78,7 +141,7 @@ describe('HtmlElementsCheck', () => {
 
                 new HtmlElementsCheck();
 
-                expect(console.warn).not.toBeCalled()
+                expect(console.warn).not.toBeCalled();
             });
         });
     });
@@ -100,6 +163,8 @@ describe('HtmlElementsCheck', () => {
 
             describe('picture element not present', () => {
                 test('console output enabled', () => {
+                    HtmlElementsHelpers.imageSourceResponsiveness = jest.fn().mockReturnValue({valid: false});
+
                     document.body.innerHTML =
                         '<div>' +
                         '  <image class="customClass" />' +
@@ -112,13 +177,13 @@ describe('HtmlElementsCheck', () => {
                     new HtmlElementsCheck(CUSTOM_CONFIG);
 
                     expect(document.querySelectorAll).toBeCalledWith('img.customClass');
-                    expect(console.warn).toBeCalled()
+                    expect(console.warn).toBeCalled();
                 });
 
                 test('console output disabled', () => {
                     new HtmlElementsCheck({...CUSTOM_CONFIG, ...{enableConsoleOutput: false}});
 
-                    expect(console.warn).not.toBeCalled()
+                    expect(console.warn).not.toBeCalled();
                 });
             });
         });

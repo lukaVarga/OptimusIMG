@@ -1,5 +1,10 @@
-import { consoleMessage } from './helpers/console';
+import { consoleMessage } from './helpers/console.helpers';
+import { HtmlElementsHelpers } from './helpers/html_elements.helpers';
 import { IHtmlElementsCheck } from './interfaces/html_elements_check.interface';
+import {
+    IImageSourceResponsivenessFault,
+    IImageSourceResponsiveness,
+} from './helpers/interfaces/html_elements.helpers.interface';
 
 export default class HtmlElementsCheck {
     constructor(configuration?: IHtmlElementsCheck) {
@@ -33,6 +38,44 @@ export default class HtmlElementsCheck {
     }
 
     private checkImageSize(image: HTMLImageElement): void {
+        const RESPONSIVENESS_PROPERTIES: IImageSourceResponsiveness = HtmlElementsHelpers.imageSourceResponsiveness(image);
+
+        if (RESPONSIVENESS_PROPERTIES.valid) {
+            return;
+        } else if (RESPONSIVENESS_PROPERTIES.faults && RESPONSIVENESS_PROPERTIES.faults
+                    .some((attribute: IImageSourceResponsivenessFault) => attribute.fault !== 'missing')) {
+            RESPONSIVENESS_PROPERTIES.faults
+                .filter((attribute: IImageSourceResponsivenessFault) => attribute.fault !== 'missing')
+                .forEach((attribute: IImageSourceResponsivenessFault) => {
+                    let text: string = '';
+
+                    switch (attribute.fault) {
+                        case 'value_format':
+                            let expectedFormat: string;
+
+                            if (attribute.attribute_name === 'srcset') {
+                                expectedFormat = 'image-name.format image-size - where image size is eg. 150w, 500w or eg. 1x, 2x, 5x. ';
+                                expectedFormat += 'For example: srcset="beautiful-image-150.jpeg 150w, beautiful-image@2x.jpeg 2x"';
+                            } else {
+                                expectedFormat = '(optional css-media-query) image-size - where image size is eg. 150px, 20em, 20rem, 80vw. ';
+                                expectedFormat += 'For example: sizes="(min-width: 300px) 80vw, (min-width: 300px) ' +
+                                    'and (max-width: 800px) 20em, 1000px"';
+                            }
+
+                            text = 'image ' + attribute.attribute_name + ' property has an unexpected value. ' +
+                                'Expected value format is ' + expectedFormat;
+                            break;
+                        case 'one_size_only':
+                            text = 'image ' + attribute.attribute_name + ' property should target multiple image dimensions ' +
+                                'for different screens. ';
+                            break;
+                    }
+
+                    console.warn(consoleMessage(text), image);
+                    return;
+                });
+        }
+
         const NATURAL_HEIGHT: number = image.naturalHeight;
         const NATURAL_WIDTH: number = image.naturalWidth;
 
@@ -42,6 +85,7 @@ export default class HtmlElementsCheck {
         const NATURAL_SIZE: number = NATURAL_HEIGHT * NATURAL_WIDTH;
         const SIZE: number = HEIGHT * WIDTH;
 
+        // It is possible the image is hidden with CSS and thus we cannot determine the proper size
         if (SIZE === 0 || NATURAL_SIZE === 0) {
             return;
         }
