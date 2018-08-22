@@ -29,6 +29,7 @@ module.exports = {
 	output: {
 		filename: 'OptimusIMG.min.js',
 		path: path.resolve(__dirname, 'dist'),
-		library: 'OptimusIMG'
+		library: 'OptimusIMG',
+		libraryExport: 'RUNTIME'
 	}
 };
