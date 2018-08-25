@@ -9,6 +9,7 @@
 # distributed files
 /dist
 /build
+/test_coverage_dir
 
 # misc
 .DS_Store

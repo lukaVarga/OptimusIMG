@@ -58,7 +58,9 @@
       "tests/__tests__/watch.spec.ts"
     ],
     "coverageReporters": [
-      "text"
+      "text",
+      "json",
+      "lcov"
     ],
     "coverageDirectory": "test_coverage_dir",
     "collectCoverageFrom": [
