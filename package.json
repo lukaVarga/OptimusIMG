@@ -1,6 +1,6 @@
 {
   "name": "optimusimg",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "A Node.js module for optimizing images in build and runtime",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -10,11 +10,13 @@
     "test": "jest --coverage",
     "lint": "tslint --project \"tsconfig.lint.json\"",
     "prepare-for-release": "rimraf build && rimraf dist && npm run lint && npm run test && npm run build:javascript-version && npm run build:production-runtime",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "semantic-release": "semantic-release",
+    "travis-deploy-once": "travis-deploy-once"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lukaVarga/OptimusIMG.git"
+    "url": "https://github.com/lukaVarga/OptimusIMG.git"
   },
   "keywords": [
     "image",
@@ -41,6 +43,8 @@
     "cz-conventional-changelog": "^2.1.0",
     "jest": "^23.5.0",
     "rimraf": "^2.6.2",
+    "semantic-release": "^15.9.9",
+    "travis-deploy-once": "^5.0.3",
     "ts-jest": "^23.1.4",
     "ts-loader": "^4.5.0",
     "tslint": "^5.11.0",
@@ -69,9 +73,9 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
         "statements": -10
       }
     },
