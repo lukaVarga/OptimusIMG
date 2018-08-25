@@ -3,10 +3,8 @@ import { IImageSourceResponsivenessFault } from '../../../src/runtime/helpers/in
 
 describe('HtmlElementsHelpers', () => {
     describe('imageSourceResponsiveness', () => {
-        /* tslint:disable:typedef */
-        const CHECK_IMAGE_SOURCES_SIZES = HtmlElementsHelpers.checkImageSourceSIZES;
-        const CHECK_IMAGE_SOURCES_SRCSET = HtmlElementsHelpers.checkImageSourceSRCSET;
-        /* tslint:enable:typedef */
+        const CHECK_IMAGE_SOURCES_SIZES: any = HtmlElementsHelpers.checkImageSourceSIZES;
+        const CHECK_IMAGE_SOURCES_SRCSET: any = HtmlElementsHelpers.checkImageSourceSRCSET;
 
         let IMAGE: HTMLImageElement;
 
