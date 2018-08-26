@@ -11,7 +11,6 @@ export default class LazyLoad {
     }
 
     private readonly _configuration: ILazyLoad = {
-        enable: true,
         className: 'optimusIMG',
         carouselClassName: 'optimusIMG-carousel',
         carouselToggleImageBtn: 'optimusIMG-carousel--toggle-btn',
@@ -143,7 +142,7 @@ export default class LazyLoad {
                     return false;
                 });
             } else if (INDEX === null) {
-                console.warn(consoleMessage('toggle button is missing data optimus image index property'), BTN);
+                console.warn(consoleMessage('toggle button is missing data-optimus-img-index property'), BTN);
             } else {
                 this.addLoadedPropertiesToImage(images[Number(INDEX)]);
             }
@@ -161,7 +160,7 @@ export default class LazyLoad {
     }
 
     private addLoadedPropertiesToImage(image: HTMLImageElement): void {
-        image.src = image.getAttribute('data-optimus-lazy-url') as string;
+        image.src = image.getAttribute('data-optimus-lazy-src') as string;
         image.setAttribute('data-optimus-loaded', 'true');
     }
 }
