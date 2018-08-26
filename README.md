@@ -1,4 +1,12 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+[![Travis build](https://img.shields.io/travis/lukaVarga/OptimusIMG.svg?style=for-the-badge)](https://travis-ci.org/lukaVarga/OptimusIMG)
+[![Codecov coverage](https://img.shields.io/codecov/c/github/lukaVarga/OptimusIMG.svg?style=for-the-badge)](https://codecov.io/gh/lukaVarga/OptimusIMG)
+![GitHub repo size in bytes](https://img.shields.io/github/repo-size/lukaVarga/OptimusIMG.svg?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/lukaVarga/OptimusIMG.svg?style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/lukaVarga/OptimusIMG.svg?style=for-the-badge)
+![GitHub release](https://img.shields.io/github/release/lukaVarga/OptimusIMG.svg?style=for-the-badge)
+[![npm](https://img.shields.io/npm/v/optimusimg.svg?style=for-the-badge)](https://www.npmjs.com/package/optimusimg)
+
 # OptimusIMG
 A Node.js module for optimising images in build and runtime.
 It helps you detect which images need further optimisation during your web application
