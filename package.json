@@ -37,6 +37,11 @@
     "url": "https://github.com/lukaVarga/OptimusIMG/issues"
   },
   "homepage": "https://github.com/lukaVarga/OptimusIMG#readme",
+  "files": [
+    "src/**/*",
+    "build/**/*",
+    "dist/**/*"
+  ],
   "devDependencies": {
     "@types/jest": "^23.3.1",
     "@types/node": "^10.7.1",
