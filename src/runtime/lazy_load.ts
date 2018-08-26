@@ -14,6 +14,7 @@ export default class LazyLoad {
         enable: true,
         className: 'optimusIMG',
         carouselClassName: 'optimusIMG-carousel',
+        carouselToggleImageBtn: 'optimusIMG-carousel--toggle-btn',
     };
 
     private _carouselIntervals: ILazyLoadCarouselInterval[] = [];
@@ -44,6 +45,7 @@ export default class LazyLoad {
 
         CAROUSEL.forEach((carousel: HTMLElement, index: number) => {
             const IMAGES: NodeListOf<HTMLImageElement> = carousel.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+            this.loadCarouselImageOnChangeIntent(carousel, IMAGES);
 
             if (carousel.getAttribute('data-optimus-interval') !== null) {
                 const INTERVAL_TIME: number = parseInt(carousel.getAttribute('data-optimus-interval') as string, 10);
@@ -102,6 +104,59 @@ export default class LazyLoad {
             if (VISIBLE_AREA.topEdge < IMAGE_POS_Y_BOTTOM && IMAGE_POS_Y_TOP < VISIBLE_AREA.bottomEdge) {
                 this.addLoadedPropertiesToImage(image);
             }
+        });
+    }
+
+    private loadCarouselImageOnChangeIntent(carousel: HTMLElement, images: NodeListOf<HTMLImageElement>): void {
+        const TOGGLE_IMG: NodeListOf<HTMLElement> = carousel.querySelectorAll('.' + this._configuration.carouselToggleImageBtn);
+
+        const LOAD_IMAGE: any = (ev: Event): void => {
+            const BTN: HTMLElement = ev.target as HTMLElement;
+            const INDEX: string | null = BTN.getAttribute('data-optimus-img-index');
+
+            if (INDEX === 'next') {
+                Array.from(images).some((image: HTMLImageElement, index: number) => {
+                    // Determine whether an image is visible or not
+                    if (image.offsetParent !== null || image.getBoundingClientRect().height > 0) {
+                        if (index === images.length - 1) {
+                            // First image is loaded by default anyway
+                            return true;
+                        }
+
+                        this.addLoadedPropertiesToImage(images[index + 1]);
+
+                        return true;
+                    }
+
+                    return false;
+                });
+            } else if (INDEX === 'previous') {
+                Array.from(images).some((image: HTMLImageElement, index: number) => {
+                    // Determine whether an image is visible or not
+                    if (image.offsetParent !== null || image.getBoundingClientRect().height > 0) {
+                        const PREVIOUS_INDEX: number = index === 0 ? images.length - 1 : index - 1;
+                        this.addLoadedPropertiesToImage(images[PREVIOUS_INDEX]);
+
+                        return true;
+                    }
+
+                    return false;
+                });
+            } else if (INDEX === null) {
+                console.warn(consoleMessage('toggle button is missing data optimus image index property'), BTN);
+            } else {
+                this.addLoadedPropertiesToImage(images[Number(INDEX)]);
+            }
+        };
+
+        TOGGLE_IMG.forEach((btn: HTMLElement) => {
+           // Mouseover listener is added so image starts getting loaded slightly before a user might click on the button
+           btn.removeEventListener('mouseover', LOAD_IMAGE);
+           btn.addEventListener('mouseover', LOAD_IMAGE);
+
+           // Touchstart listeners are needed for mobile users
+           btn.removeEventListener('touchstart', LOAD_IMAGE);
+           btn.addEventListener('touchstart', LOAD_IMAGE);
         });
     }
 

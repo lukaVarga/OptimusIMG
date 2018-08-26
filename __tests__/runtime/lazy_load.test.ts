@@ -185,6 +185,136 @@ describe('LazyLoad', () => {
 
                     jest.useRealTimers();
                 });
+
+                describe('carousel toggle button events', () => {
+                    beforeEach(() => {
+                        document.body.innerHTML =
+                            '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
+                            '  <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="next">Next</div>' +
+                            '  <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="previous">Previous</div>' +
+                            '  <image id="image-0" data-optimus-lazy-url="https://www.foo.bar/img0.jpeg" />' +
+                            '  <image id="image-1" data-optimus-lazy-url="https://www.foo.bar/img1.jpeg" />' +
+                            '  <image id="image-2" data-optimus-lazy-url="https://www.foo.bar/img2.jpeg" />' +
+                            '  <image id="image-3" data-optimus-lazy-url="https://www.foo.bar/img3.jpeg" />' +
+                            '  <div class="indicators">' +
+                            '   <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="0">0</div>' +
+                            '   <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="1">1</div>' +
+                            '   <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="2">2</div>' +
+                            '   <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="3">3</div>' +
+                            '  </div>' +
+                            '</div>';
+                    });
+
+                    test('new mouseover and touchstart listeners are added to each button', () => {
+                        const BTNS: NodeListOf<HTMLElement> =
+                            document.querySelectorAll('.optimusIMG-carousel--toggle-btn') as NodeListOf<HTMLElement>;
+
+                        BTNS.forEach((btn: Element) => {
+                               btn.removeEventListener = jest.fn();
+                               btn.addEventListener = jest.fn();
+                        });
+
+                        new LazyLoad();
+
+                        BTNS.forEach((btn: Element) => {
+                            expect(btn.addEventListener).toHaveBeenCalledTimes(2);
+                            expect(btn.removeEventListener).toHaveBeenCalledTimes(2);
+
+                            expect(btn.addEventListener).toBeCalledWith('mouseover',  expect.any(Function));
+                            expect(btn.removeEventListener).toBeCalledWith('mouseover',  expect.any(Function));
+                            expect(btn.addEventListener).toBeCalledWith('touchstart',  expect.any(Function));
+                            expect(btn.removeEventListener).toBeCalledWith('touchstart',  expect.any(Function));
+                        });
+                    });
+
+                    test('console warning is triggered if image index is undefined', () => {
+                        const BTN: HTMLElement = document.querySelector('.optimusIMG-carousel--toggle-btn') as HTMLElement;
+                        BTN.removeAttribute('data-optimus-img-index');
+                        console.warn = jest.fn();
+
+                        new LazyLoad();
+
+                        BTN.dispatchEvent(new Event('mouseover'));
+
+                        expect(console.warn).toBeCalledWith(consoleMessage('toggle button is missing data optimus image index property'), BTN);
+                    });
+
+                    test('image with correct index gets loaded in case index is a number', () => {
+                        const BTN: HTMLElement = document.querySelector('.optimusIMG-carousel--toggle-btn') as HTMLElement;
+                        BTN.setAttribute('data-optimus-img-index', '3');
+                        const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+
+                        new LazyLoad();
+
+                        expect(IMAGES[3].getAttribute('data-optimus-loaded')).toEqual(null);
+
+                        BTN.dispatchEvent(new Event('mouseover'));
+
+                        expect(IMAGES[3].getAttribute('data-optimus-loaded')).toEqual('true');
+                    });
+
+                    describe('next index', () => {
+                        test('next image gets loaded if currently visible image is not last', () => {
+                            const BTN: HTMLElement = document.querySelector('.optimusIMG-carousel--toggle-btn') as HTMLElement;
+                            BTN.setAttribute('data-optimus-img-index', 'next');
+                            const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+                            IMAGES[2].getBoundingClientRect = jest.fn().mockReturnValue({height: 350});
+
+                            new LazyLoad();
+
+                            expect(IMAGES[3].getAttribute('data-optimus-loaded')).toEqual(null);
+
+                            BTN.dispatchEvent(new Event('mouseover'));
+
+                            expect(IMAGES[3].getAttribute('data-optimus-loaded')).toEqual('true');
+                        });
+
+                        test('no exceptions if currently visible image is last', () => {
+                            const BTN: HTMLElement = document.querySelector('.optimusIMG-carousel--toggle-btn') as HTMLElement;
+                            BTN.setAttribute('data-optimus-img-index', 'next');
+                            const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+                            IMAGES[3].getBoundingClientRect = jest.fn().mockReturnValue({height: 350});
+
+                            new LazyLoad();
+
+                            BTN.dispatchEvent(new Event('mouseover'));
+
+                            expect(IMAGES[0].getAttribute('data-optimus-loaded')).toEqual('true');
+                        });
+                    });
+
+                    describe('previous index', () => {
+                        test('previous image gets loaded if currently visible image is not first', () => {
+                            const BTN: HTMLElement = document.querySelector('.optimusIMG-carousel--toggle-btn') as HTMLElement;
+                            BTN.setAttribute('data-optimus-img-index', 'previous');
+                            const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+                            IMAGES[2].getBoundingClientRect = jest.fn().mockReturnValue({height: 350});
+
+                            new LazyLoad();
+
+                            expect(IMAGES[1].getAttribute('data-optimus-loaded')).toEqual(null);
+
+                            BTN.dispatchEvent(new Event('touchstart'));
+
+                            expect(IMAGES[1].getAttribute('data-optimus-loaded')).toEqual('true');
+                        });
+
+                        test('last image gets loaded if currently visible image is first', () => {
+                            const BTN: HTMLElement = document.querySelector('.optimusIMG-carousel--toggle-btn') as HTMLElement;
+                            BTN.setAttribute('data-optimus-img-index', 'previous');
+                            const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+                            IMAGES[0].getBoundingClientRect = jest.fn().mockReturnValue({height: 350});
+
+                            new LazyLoad();
+
+                            expect(IMAGES[3].getAttribute('data-optimus-loaded')).toEqual(null);
+
+                            BTN.dispatchEvent(new Event('touchstart'));
+
+                            expect(IMAGES[3].getAttribute('data-optimus-loaded')).toEqual('true');
+                        });
+                    });
+                });
             });
 
             describe('optimus interval not defined', () => {
