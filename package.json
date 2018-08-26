@@ -10,7 +10,7 @@
     "test": "jest --coverage",
     "lint": "tslint --project \"tsconfig.lint.json\"",
     "prepare-for-release": "rimraf build && rimraf dist && npm run lint && npm run test && npm run build:javascript-version && npm run build:production-runtime",
-    "commit": "git-cz",
+    "commit": "npm run lint && npm run test && git-cz",
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once"
   },
