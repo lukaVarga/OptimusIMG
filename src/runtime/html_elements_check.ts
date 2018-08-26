@@ -15,7 +15,7 @@ export default class HtmlElementsCheck {
         this.execute();
     }
 
-    private _configuration: IHtmlElementsCheck = {
+    private readonly _configuration: IHtmlElementsCheck = {
         enableConsoleOutput: true,
         className: 'optimusIMG',
     };
