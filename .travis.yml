@@ -15,5 +15,5 @@ after_success:
 script:
   - npm run prepare-for-release
 branches:
-  except:
-    - /^v\d+\.\d+\.\d+$/
+  only:
+    - master
