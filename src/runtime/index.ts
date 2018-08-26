@@ -6,5 +6,5 @@ import LazyLoad from './lazy_load';
 
 export const RUNTIME: IRuntime = {
     LazyLoad: (configuration?: ILazyLoad): LazyLoad => new LazyLoad(configuration),
-    ElementsCheck: (configuration?: IHtmlElementsCheck): HtmlElementsCheck => new HtmlElementsCheck(configuration),
+    HtmlElementsCheck: (configuration?: IHtmlElementsCheck): HtmlElementsCheck => new HtmlElementsCheck(configuration),
 };

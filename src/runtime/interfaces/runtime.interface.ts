@@ -8,5 +8,5 @@ type ILazyLoadFunc = (configuration?: ILazyLoad) => LazyLoad;
 
 export interface IRuntime {
     LazyLoad: ILazyLoadFunc;
-    ElementsCheck: IElementsCheckFunc;
+    HtmlElementsCheck: IElementsCheckFunc;
 }

@@ -7,11 +7,11 @@ describe('RUNTIME', () => {
     test('inclusion of all runtime codebase', () => {
         const EXPECTED_RUNTIME: IRuntime = {
             LazyLoad: expect.any(Function),
-            ElementsCheck: expect.any(Function),
+            HtmlElementsCheck: expect.any(Function),
         };
 
         expect(RUNTIME).toMatchObject(EXPECTED_RUNTIME);
-        expect(RUNTIME.ElementsCheck()).toEqual(expect.any(HtmlElementsCheck));
+        expect(RUNTIME.HtmlElementsCheck()).toEqual(expect.any(HtmlElementsCheck));
         expect(RUNTIME.LazyLoad()).toEqual(expect.any(LazyLoad));
     });
 });
