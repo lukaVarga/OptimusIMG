@@ -9,6 +9,7 @@
     "build:production-runtime": "rimraf dist && webpack -p",
     "test": "jest --coverage",
     "lint": "tslint --project \"tsconfig.lint.json\"",
+    "report-coverage": "cat ./test_coverage_dir/lcov.info | codecov",
     "prepare-for-release": "rimraf build && rimraf dist && npm run lint && npm run test && npm run build:javascript-version && npm run build:production-runtime",
     "commit": "npm run lint && npm run test && git-cz",
     "semantic-release": "semantic-release",
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.1",
     "@types/node": "^10.7.1",
+    "codecov.io": "^0.1.6",
     "commitizen": "^2.10.1",
     "cz-conventional-changelog": "^2.1.0",
     "jest": "^23.5.0",
@@ -100,6 +102,9 @@
     "analyzeCommits": "@semantic-release/commit-analyzer",
     "generateNotes": "@semantic-release/release-notes-generator",
     "prepare": "@semantic-release/npm",
-    "publish": ["@semantic-release/npm", "@semantic-release/github"]
+    "publish": [
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
   }
 }

@@ -10,6 +10,7 @@ node_js:
   - '8'
   - '6'
 after_success:
+  - npm run report-coverage
   - npm run travis-deploy-once "npm run semantic-release"
 script:
   - npm run prepare-for-release
