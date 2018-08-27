@@ -83,6 +83,28 @@ describe('LazyLoad', () => {
                 expect(document.removeEventListener).toBeCalledWith('scroll', expect.any(Function));
             });
 
+            test('scroll event listener does not get duplicated', () => {
+                const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+                const LAZY_LOAD: LazyLoad = new LazyLoad();
+                LAZY_LOAD.execute();
+                LAZY_LOAD.execute();
+                LAZY_LOAD.execute();
+                new LazyLoad();
+                new LazyLoad();
+
+                IMAGES.forEach((img: HTMLImageElement) => {
+                    img.removeAttribute('data-optimus-loaded');
+                    img.getBoundingClientRect = jest.fn().mockReturnValue({top: 0, bottom: 0});
+                });
+
+                document.dispatchEvent(new Event('scroll'));
+
+                IMAGES.forEach((img: HTMLImageElement) => {
+                    // The function gets called once per image for top and once per image for bottom position
+                    expect(img.getBoundingClientRect).toHaveBeenCalledTimes(2);
+                });
+            });
+
             test('images which werent loaded yet get analysed for loading on scrolling', () => {
                 new LazyLoad();
 
@@ -217,14 +239,34 @@ describe('LazyLoad', () => {
                         new LazyLoad();
 
                         BTNS.forEach((btn: Element) => {
-                            expect(btn.addEventListener).toHaveBeenCalledTimes(2);
-                            expect(btn.removeEventListener).toHaveBeenCalledTimes(2);
+                            expect(btn.addEventListener).toHaveBeenCalledTimes(3);
+                            expect(btn.removeEventListener).toHaveBeenCalledTimes(3);
 
                             expect(btn.addEventListener).toBeCalledWith('mouseover',  expect.any(Function));
                             expect(btn.removeEventListener).toBeCalledWith('mouseover',  expect.any(Function));
+                            expect(btn.addEventListener).toBeCalledWith('mousedown',  expect.any(Function));
+                            expect(btn.removeEventListener).toBeCalledWith('mousedown',  expect.any(Function));
                             expect(btn.addEventListener).toBeCalledWith('touchstart',  expect.any(Function));
                             expect(btn.removeEventListener).toBeCalledWith('touchstart',  expect.any(Function));
                         });
+                    });
+
+                    test('event listeners do not get duplicated when executing lazy load multiple times', () => {
+                        console.warn = jest.fn();
+                        const BTN: HTMLElement =
+                            document.querySelector('.optimusIMG-carousel--toggle-btn') as HTMLElement;
+                        BTN.removeAttribute('data-optimus-img-index');
+
+                        const LAZY_LOAD: LazyLoad = new LazyLoad();
+                        LAZY_LOAD.execute();
+                        LAZY_LOAD.execute();
+                        LAZY_LOAD.execute();
+                        new LazyLoad();
+                        new LazyLoad();
+
+                        BTN.dispatchEvent(new Event('mouseover'));
+
+                        expect(console.warn).toHaveBeenCalledTimes(1);
                     });
 
                     test('console warning is triggered if image index is undefined', () => {

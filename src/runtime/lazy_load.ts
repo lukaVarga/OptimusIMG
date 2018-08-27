@@ -1,6 +1,9 @@
 import { ILazyLoad, ILazyLoadCarouselInterval } from './interfaces/lazy_load.interface';
 import { consoleMessage } from './helpers/console.helpers';
 
+// For ensuring all events are properly cleared from whichever instance of LazyLoad, eg. if user does new LazyLoad(); multiple times
+let cachedLazyLoadRef: LazyLoad;
+
 export default class LazyLoad {
     constructor(configuration?: ILazyLoad) {
         if (configuration) {
@@ -8,6 +11,7 @@ export default class LazyLoad {
         }
 
         this.execute();
+        cachedLazyLoadRef = this;
     }
 
     private readonly _configuration: ILazyLoad = {
@@ -44,7 +48,7 @@ export default class LazyLoad {
 
         CAROUSEL.forEach((carousel: HTMLElement, index: number) => {
             const IMAGES: NodeListOf<HTMLImageElement> = carousel.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
-            this.loadCarouselImageOnChangeIntent(carousel, IMAGES);
+            this.loadCarouselImageOnEventOnChangeIntent(carousel);
 
             if (carousel.getAttribute('data-optimus-interval') !== null) {
                 const INTERVAL_TIME: number = parseInt(carousel.getAttribute('data-optimus-interval') as string, 10);
@@ -106,57 +110,64 @@ export default class LazyLoad {
         });
     }
 
-    private loadCarouselImageOnChangeIntent(carousel: HTMLElement, images: NodeListOf<HTMLImageElement>): void {
+    private loadCarouselImageOnEventOnChangeIntent(carousel: HTMLElement): void {
         const TOGGLE_IMG: NodeListOf<HTMLElement> = carousel.querySelectorAll('.' + this._configuration.carouselToggleImageBtn);
 
-        const LOAD_IMAGE: any = (ev: Event): void => {
-            const BTN: HTMLElement = ev.target as HTMLElement;
-            const INDEX: string | null = BTN.getAttribute('data-optimus-img-index');
-
-            if (INDEX === 'next') {
-                Array.from(images).some((image: HTMLImageElement, index: number) => {
-                    // Determine whether an image is visible or not
-                    if (image.offsetParent !== null || image.getBoundingClientRect().height > 0) {
-                        if (index === images.length - 1) {
-                            // First image is loaded by default anyway
-                            return true;
-                        }
-
-                        this.addLoadedPropertiesToImage(images[index + 1]);
-
-                        return true;
-                    }
-
-                    return false;
-                });
-            } else if (INDEX === 'previous') {
-                Array.from(images).some((image: HTMLImageElement, index: number) => {
-                    // Determine whether an image is visible or not
-                    if (image.offsetParent !== null || image.getBoundingClientRect().height > 0) {
-                        const PREVIOUS_INDEX: number = index === 0 ? images.length - 1 : index - 1;
-                        this.addLoadedPropertiesToImage(images[PREVIOUS_INDEX]);
-
-                        return true;
-                    }
-
-                    return false;
-                });
-            } else if (INDEX === null) {
-                console.warn(consoleMessage('toggle button is missing data-optimus-img-index property'), BTN);
-            } else {
-                this.addLoadedPropertiesToImage(images[Number(INDEX)]);
-            }
-        };
-
         TOGGLE_IMG.forEach((btn: HTMLElement) => {
+           btn.removeEventListener('mouseover', cachedLazyLoadRef.loadCarouselImageOnEvent);
+           btn.removeEventListener('mousedown', cachedLazyLoadRef.loadCarouselImageOnEvent);
+           btn.removeEventListener('touchstart', cachedLazyLoadRef.loadCarouselImageOnEvent);
+
            // Mouseover listener is added so image starts getting loaded slightly before a user might click on the button
-           btn.removeEventListener('mouseover', LOAD_IMAGE);
-           btn.addEventListener('mouseover', LOAD_IMAGE);
+           btn.addEventListener('mouseover', this.loadCarouselImageOnEvent);
+
+           // Mousedown event listeners are needed in case the user does not move the mouse to trigger mouseover again
+           btn.addEventListener('mousedown', this.loadCarouselImageOnEvent);
 
            // Touchstart listeners are needed for mobile users
-           btn.removeEventListener('touchstart', LOAD_IMAGE);
-           btn.addEventListener('touchstart', LOAD_IMAGE);
+           btn.addEventListener('touchstart', this.loadCarouselImageOnEvent);
         });
+    }
+
+    private loadCarouselImageOnEvent = (ev: Event): void => {
+        const BTN: HTMLElement = ev.target as HTMLElement;
+        const INDEX: string | null = BTN.getAttribute('data-optimus-img-index');
+        const CAROUSEL: HTMLElement = BTN.closest('.' + this._configuration.carouselClassName) as HTMLElement;
+        const IMAGES: NodeListOf<HTMLImageElement> = CAROUSEL.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+
+        if (INDEX === 'next') {
+            Array.from(IMAGES).some((image: HTMLImageElement, index: number) => {
+                // Determine whether an image is visible or not
+                if (image.offsetParent !== null || image.getBoundingClientRect().height > 0) {
+                    if (index === IMAGES.length - 1) {
+                        // First image is loaded by default anyway
+                        return true;
+                    }
+
+                    this.addLoadedPropertiesToImage(IMAGES[index + 1]);
+
+                    return true;
+                }
+
+                return false;
+            });
+        } else if (INDEX === 'previous') {
+            Array.from(IMAGES).some((image: HTMLImageElement, index: number) => {
+                // Determine whether an image is visible or not
+                if (image.offsetParent !== null || image.getBoundingClientRect().height > 0) {
+                    const PREVIOUS_INDEX: number = index === 0 ? IMAGES.length - 1 : index - 1;
+                    this.addLoadedPropertiesToImage(IMAGES[PREVIOUS_INDEX]);
+
+                    return true;
+                }
+
+                return false;
+            });
+        } else if (INDEX === null) {
+            console.warn(consoleMessage('toggle button is missing data-optimus-img-index property'), BTN);
+        } else {
+            this.addLoadedPropertiesToImage(IMAGES[Number(INDEX)]);
+        }
     }
 
     private addLoadedPropertiesToImage(image: HTMLImageElement): void {
