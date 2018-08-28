@@ -12,7 +12,10 @@ export default class LazyLoad {
 
         this.execute();
         cachedLazyLoadRef = this;
+        this._cachedLazyLoadRef = cachedLazyLoadRef;
     }
+
+    private readonly _cachedLazyLoadRef: LazyLoad | undefined = cachedLazyLoadRef;
 
     private readonly _configuration: ILazyLoad = {
         className: 'optimusIMG',
@@ -114,9 +117,11 @@ export default class LazyLoad {
         const TOGGLE_IMG: NodeListOf<HTMLElement> = carousel.querySelectorAll('.' + this._configuration.carouselToggleImageBtn);
 
         TOGGLE_IMG.forEach((btn: HTMLElement) => {
-           btn.removeEventListener('mouseover', cachedLazyLoadRef.loadCarouselImageOnEvent);
-           btn.removeEventListener('mousedown', cachedLazyLoadRef.loadCarouselImageOnEvent);
-           btn.removeEventListener('touchstart', cachedLazyLoadRef.loadCarouselImageOnEvent);
+           if (this._cachedLazyLoadRef) {
+               btn.removeEventListener('mouseover', cachedLazyLoadRef.loadCarouselImageOnEvent);
+               btn.removeEventListener('mousedown', cachedLazyLoadRef.loadCarouselImageOnEvent);
+               btn.removeEventListener('touchstart', cachedLazyLoadRef.loadCarouselImageOnEvent);
+           }
 
            // Mouseover listener is added so image starts getting loaded slightly before a user might click on the button
            btn.addEventListener('mouseover', this.loadCarouselImageOnEvent);

@@ -242,12 +242,12 @@ describe('LazyLoad', () => {
                             expect(btn.addEventListener).toHaveBeenCalledTimes(3);
                             expect(btn.removeEventListener).toHaveBeenCalledTimes(3);
 
-                            expect(btn.addEventListener).toBeCalledWith('mouseover',  expect.any(Function));
-                            expect(btn.removeEventListener).toBeCalledWith('mouseover',  expect.any(Function));
-                            expect(btn.addEventListener).toBeCalledWith('mousedown',  expect.any(Function));
-                            expect(btn.removeEventListener).toBeCalledWith('mousedown',  expect.any(Function));
-                            expect(btn.addEventListener).toBeCalledWith('touchstart',  expect.any(Function));
-                            expect(btn.removeEventListener).toBeCalledWith('touchstart',  expect.any(Function));
+                            expect(btn.addEventListener).toBeCalledWith('mouseover', expect.any(Function));
+                            expect(btn.removeEventListener).toBeCalledWith('mouseover', expect.any(Function));
+                            expect(btn.addEventListener).toBeCalledWith('mousedown', expect.any(Function));
+                            expect(btn.removeEventListener).toBeCalledWith('mousedown', expect.any(Function));
+                            expect(btn.addEventListener).toBeCalledWith('touchstart', expect.any(Function));
+                            expect(btn.removeEventListener).toBeCalledWith('touchstart', expect.any(Function));
                         });
                     });
 
@@ -258,6 +258,7 @@ describe('LazyLoad', () => {
                         BTN.removeAttribute('data-optimus-img-index');
 
                         const LAZY_LOAD: LazyLoad = new LazyLoad();
+                        Object.defineProperty(LAZY_LOAD, '_cachedLazyLoadRef', {value: undefined});
                         LAZY_LOAD.execute();
                         LAZY_LOAD.execute();
                         LAZY_LOAD.execute();
