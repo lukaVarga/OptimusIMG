@@ -12,10 +12,10 @@ describe('LazyLoad', () => {
 
             document.body.innerHTML =
                 '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                 '</div>';
 
             const LAZY_LOAD: LazyLoad = new LazyLoad();
@@ -30,10 +30,10 @@ describe('LazyLoad', () => {
 
             document.body.innerHTML =
                 '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                 '</div>';
 
             const LAZY_LOAD: LazyLoad = new LazyLoad();
@@ -48,10 +48,10 @@ describe('LazyLoad', () => {
         describe('images', () => {
             beforeEach(() => {
                 document.body.innerHTML =
-                    '<image id="image-0" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '<image id="image-1" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '<image id="image-2" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '<image id="image-3" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
+                    '<img id="image-0" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                    '<img id="image-1" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                    '<img id="image-2" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                    '<img id="image-3" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
             });
 
             test('images near or in view get loaded immediately', () => {
@@ -137,26 +137,26 @@ describe('LazyLoad', () => {
                 beforeEach(() => {
                     document.body.innerHTML =
                         '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                        '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                        '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                        '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                        '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                        '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                        '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                        '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                        '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                         '</div>';
                 });
 
                 test('first image in each carousel gets loaded immediately', () => {
                     document.body.innerHTML =
                         '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                        '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                        '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                        '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                        '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                        '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                        '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                        '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                        '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                         '</div>' +
                         '<div id="carousel-1" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                        '  <image id="image-4" data-optimus-lazy-src="https://www.foo.bar/img4.jpeg" />' +
-                        '  <image id="image-5" data-optimus-lazy-src="https://www.foo.bar/img5.jpeg" />' +
-                        '  <image id="image-6" data-optimus-lazy-src="https://www.foo.bar/img6.jpeg" />' +
-                        '  <image id="image-7" data-optimus-lazy-src="https://www.foo.bar/img7.jpeg" />' +
+                        '  <img id="image-4" data-optimus-lazy-src="https://www.foo.bar/img4.jpeg" />' +
+                        '  <img id="image-5" data-optimus-lazy-src="https://www.foo.bar/img5.jpeg" />' +
+                        '  <img id="image-6" data-optimus-lazy-src="https://www.foo.bar/img6.jpeg" />' +
+                        '  <img id="image-7" data-optimus-lazy-src="https://www.foo.bar/img7.jpeg" />' +
                         '</div>';
 
                     const IMG_0: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
@@ -214,10 +214,10 @@ describe('LazyLoad', () => {
                             '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
                             '  <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="next">Next</div>' +
                             '  <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="previous">Previous</div>' +
-                            '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                            '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                            '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                            '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                            '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                            '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                            '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                            '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                             '  <div class="indicators">' +
                             '   <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="0">0</div>' +
                             '   <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="1">1</div>' +
@@ -366,9 +366,9 @@ describe('LazyLoad', () => {
 
                     document.body.innerHTML =
                         '<div id="carousel-0" class="optimusIMG-carousel">' +
-                        '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                        '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                        '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                        '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                        '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                        '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
                         '</div>';
                 });
 
@@ -410,10 +410,10 @@ describe('LazyLoad', () => {
 
             beforeEach(() => {
                 document.body.innerHTML =
-                    '<image id="image-0" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '<image id="image-1" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '<image id="image-2" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '<image id="image-3" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
+                    '<img id="image-0" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                    '<img id="image-1" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                    '<img id="image-2" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                    '<img id="image-3" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
             });
 
             test('images near or in view get loaded immediately', () => {
@@ -445,26 +445,26 @@ describe('LazyLoad', () => {
             beforeEach(() => {
                 document.body.innerHTML =
                     '<div id="carousel-0" class="customClass" data-optimus-interval="5000">' +
-                    '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                    '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                    '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                    '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                    '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                     '</div>';
             });
 
             test('the first image in each carousel gets loaded immediately', () => {
                 document.body.innerHTML =
                     '<div id="carousel-0" class="customClass" data-optimus-interval="5000">' +
-                    '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                    '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                    '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                    '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                    '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                     '</div>' +
                     '<div id="carousel-1" class="customClass" data-optimus-interval="5000">' +
-                    '  <image id="image-4" data-optimus-lazy-src="https://www.foo.bar/img4.jpeg" />' +
-                    '  <image id="image-5" data-optimus-lazy-src="https://www.foo.bar/img5.jpeg" />' +
-                    '  <image id="image-6" data-optimus-lazy-src="https://www.foo.bar/img6.jpeg" />' +
-                    '  <image id="image-7" data-optimus-lazy-src="https://www.foo.bar/img7.jpeg" />' +
+                    '  <img id="image-4" data-optimus-lazy-src="https://www.foo.bar/img4.jpeg" />' +
+                    '  <img id="image-5" data-optimus-lazy-src="https://www.foo.bar/img5.jpeg" />' +
+                    '  <img id="image-6" data-optimus-lazy-src="https://www.foo.bar/img6.jpeg" />' +
+                    '  <img id="image-7" data-optimus-lazy-src="https://www.foo.bar/img7.jpeg" />' +
                     '</div>';
 
                 const IMG_0: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
