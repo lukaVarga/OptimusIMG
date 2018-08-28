@@ -103,7 +103,7 @@ import { RUNTIME as OptimusIMG } from 'optimusimg/build/runtime/index.js';
 ...
 ```
 
-### Angular example
+#### Angular example
 The following will trigger lazy loading after eg. a `CarouselComponent` is mounted.
 ```
 import { Component, OnInit } from '@angular/core';
@@ -136,6 +136,24 @@ export class CarouselComponent implements OnInit {
     OptimusIMG.HtmlElementsCheck();
 </script>
 ```
+
+### Buildtime useage
+OptimusIMG comes with buildtime scripts. For instance, OptimusIMG will prepare a progressive version of your images
+which will be used for speeding up the initial load and will, in combination with runtime `ProgressiveImages` function,
+automatically load the high-res (original) version of your image and swap the images once the high-res version is loaded.
+
+To run buildtime functions, you need to `npm install --save optimusimg` (if you haven't done so already) and then use `npx function` (eg. `npx prepare-progressive-images`):
+
+#### Requirements for buildtime functions
+- `npm@5.2.0` or higher (as it ships with npx). To find out which version of npm you are using, type `npm --version`
+    - If you are running `npm < 5.2.0` and cannot upgrade, then you can do `npm install -g npx`
+
+#### npx prepare-progressive-images
+Prepare progressive images function supports images in `.jpg` (or `.jpeg`) and `.png` formats / file extensions.
+The function will make a copy of all images within the folder (and all subfolders) you specify and modify them to be used in runtime for progressive loading.
+The images will be in the same formats as the originals and will differ from the original image by `-OptimusIMG-progressive` extension.
+
+Please do not change the name of these images.
 
 ## Contributing
 Clone, `npm install`, code, lint, test, push and open a pull request.
