@@ -1,10 +1,16 @@
 import LazyLoad from '../../src/runtime/lazy_load';
 import { ILazyLoad } from '../../src/runtime/interfaces/lazy_load.interface';
 import { consoleMessage } from '../../src/runtime/helpers/console.helpers';
-
 /* tslint:disable no-unused-expression */
 describe('LazyLoad', () => {
     const QUERY_SELECTOR_ALL: any = document.querySelectorAll;
+    const REMOVE_EVENT_LISTENER: any = document.removeEventListener;
+    const ADD_EVENT_LISTENER: any = document.addEventListener;
+
+    afterEach(() => {
+        document.removeEventListener = REMOVE_EVENT_LISTENER;
+        document.addEventListener = ADD_EVENT_LISTENER;
+    });
 
     describe('execute', () => {
         test('it clears all existing intervals', () => {
@@ -24,24 +30,6 @@ describe('LazyLoad', () => {
 
             expect(window.clearInterval).toHaveBeenCalledTimes(1);
         });
-
-        test('it removes scroll event listeners', () => {
-            document.removeEventListener = jest.fn();
-
-            document.body.innerHTML =
-                '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
-                '</div>';
-
-            const LAZY_LOAD: LazyLoad = new LazyLoad();
-
-            LAZY_LOAD.execute();
-
-            expect(document.removeEventListener).toHaveBeenCalledTimes(2);
-        });
     });
 
     describe('default configuration', () => {
@@ -52,6 +40,11 @@ describe('LazyLoad', () => {
                     '<img id="image-1" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
                     '<img id="image-2" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
                     '<img id="image-3" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
+            });
+
+            afterEach(() => {
+                document.removeEventListener = REMOVE_EVENT_LISTENER;
+                document.addEventListener = ADD_EVENT_LISTENER;
             });
 
             test('images near or in view get loaded immediately', () => {
@@ -75,12 +68,10 @@ describe('LazyLoad', () => {
 
             test('scroll event listener gets added', () => {
                 document.addEventListener = jest.fn();
-                document.removeEventListener = jest.fn();
 
                 new LazyLoad();
 
                 expect(document.addEventListener).toBeCalledWith('scroll', expect.any(Function), {passive: true});
-                expect(document.removeEventListener).toBeCalledWith('scroll', expect.any(Function));
             });
 
             test('scroll event listener does not get duplicated', () => {
@@ -424,6 +415,7 @@ describe('LazyLoad', () => {
             });
 
             test('images which werent loaded yet get analysed for loading on scrolling', () => {
+                document.querySelectorAll = QUERY_SELECTOR_ALL;
                 document.querySelectorAll = jest.fn().mockReturnValue(document.querySelectorAll('img'));
                 LAZY_LOAD.execute();
 

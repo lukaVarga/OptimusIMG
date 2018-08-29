@@ -1,5 +1,6 @@
 import { ILazyLoad, ILazyLoadCarouselInterval } from './interfaces/lazy_load.interface';
 import { consoleMessage } from './helpers/console.helpers';
+import ProgressiveLoad from './progressive_load';
 
 // For ensuring all events are properly cleared from whichever instance of LazyLoad, eg. if user does new LazyLoad(); multiple times
 let cachedLazyLoadRef: LazyLoad;
@@ -38,11 +39,12 @@ export default class LazyLoad {
 
         this.loadImagesNearOrInView(IMAGES, true);
 
-        const LOAD_IMAGES: any = (): void => this.loadImagesBeingScrolledInView();
-
         // Prevent multiple scroll event listeners being attached in case lazy load is enabled in an SPA environment
-        document.removeEventListener('scroll', LOAD_IMAGES);
-        document.addEventListener('scroll', LOAD_IMAGES, {passive: true});
+        if (this._cachedLazyLoadRef) {
+            document.removeEventListener('scroll', this._cachedLazyLoadRef.loadImagesBeingScrolledInView);
+        }
+
+        document.addEventListener('scroll', this.loadImagesBeingScrolledInView, {passive: true});
     }
 
     private carousels(): void {
@@ -85,7 +87,7 @@ export default class LazyLoad {
         });
     }
 
-    private loadImagesBeingScrolledInView(): void {
+    private loadImagesBeingScrolledInView = (_ev: Event): void => {
         const SELECTOR: string = 'img.' + this._configuration.className + ':not([data-optimus-loaded="true"])';
         const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll(SELECTOR) as NodeListOf<HTMLImageElement>;
 
@@ -140,34 +142,22 @@ export default class LazyLoad {
         const CAROUSEL: HTMLElement = BTN.closest('.' + this._configuration.carouselClassName) as HTMLElement;
         const IMAGES: NodeListOf<HTMLImageElement> = CAROUSEL.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
 
-        if (INDEX === 'next') {
-            Array.from(IMAGES).some((image: HTMLImageElement, index: number) => {
+        if (INDEX === 'previous' || INDEX === 'next') {
+            const CURRENT_IMG_INDEX: number = Array.from(IMAGES).findIndex((image: HTMLImageElement) => {
                 // Determine whether an image is visible or not
-                if (image.offsetParent !== null || image.getBoundingClientRect().height > 0) {
-                    if (index === IMAGES.length - 1) {
-                        // First image is loaded by default anyway
-                        return true;
-                    }
-
-                    this.addLoadedPropertiesToImage(IMAGES[index + 1]);
-
-                    return true;
-                }
-
-                return false;
+                return image.offsetParent !== null || image.getBoundingClientRect().height > 0;
             });
-        } else if (INDEX === 'previous') {
-            Array.from(IMAGES).some((image: HTMLImageElement, index: number) => {
-                // Determine whether an image is visible or not
-                if (image.offsetParent !== null || image.getBoundingClientRect().height > 0) {
-                    const PREVIOUS_INDEX: number = index === 0 ? IMAGES.length - 1 : index - 1;
-                    this.addLoadedPropertiesToImage(IMAGES[PREVIOUS_INDEX]);
 
-                    return true;
-                }
+            let index: number;
 
-                return false;
-            });
+            if (INDEX === 'next') {
+                index = CURRENT_IMG_INDEX === IMAGES.length - 1 ? 0 : CURRENT_IMG_INDEX + 1;
+            } else {
+                index = CURRENT_IMG_INDEX === 0 ? IMAGES.length - 1 : CURRENT_IMG_INDEX - 1;
+            }
+
+            this.addLoadedPropertiesToImage(IMAGES[index]);
+
         } else if (INDEX === null) {
             console.warn(consoleMessage('toggle button is missing data-optimus-img-index property'), BTN);
         } else {
@@ -176,7 +166,14 @@ export default class LazyLoad {
     }
 
     private addLoadedPropertiesToImage(image: HTMLImageElement): void {
-        image.src = image.getAttribute('data-optimus-lazy-src') as string;
-        image.setAttribute('data-optimus-loaded', 'true');
+        const LAZY_SRC: string = image.getAttribute('data-optimus-lazy-src') as string;
+
+        // To prevent firing multiple load events for image
+        if (LAZY_SRC !== image.src) {
+            image.src = LAZY_SRC;
+            image.setAttribute('data-optimus-loaded', 'true');
+        }
+
+        ProgressiveLoad.loadProgressiveImage(image);
     }
 }
