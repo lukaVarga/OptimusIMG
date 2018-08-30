@@ -8,8 +8,8 @@ describe('HtmlElementsCheck', () => {
     describe('default configuration', () => {
         describe('checkPictureElementPresence', () => {
             beforeAll(() => {
-                Object.defineProperty(HTMLImageElement.prototype, 'naturalHeight', { get: (): number => 50 });
-                Object.defineProperty(HTMLImageElement.prototype, 'naturalWidth', { get: (): number => 50 });
+                Object.defineProperty(HTMLImageElement.prototype, 'naturalHeight', {get: (): number => 50});
+                Object.defineProperty(HTMLImageElement.prototype, 'naturalWidth', {get: (): number => 50});
             });
 
             beforeEach(() => {
@@ -20,7 +20,7 @@ describe('HtmlElementsCheck', () => {
                 beforeEach(() => {
                     document.body.innerHTML =
                         '<div>' +
-                        '  <image class="optimusIMG" />' +
+                        '  <img class="optimusIMG" />' +
                         '</div>';
                 });
 
@@ -137,7 +137,7 @@ describe('HtmlElementsCheck', () => {
             test('picture element present', () => {
                 document.body.innerHTML =
                     '<picture>' +
-                    '  <image class="optimusIMG" />' +
+                    '  <img class="optimusIMG" />' +
                     '</picture>';
 
                 new HtmlElementsCheck();
@@ -156,7 +156,7 @@ describe('HtmlElementsCheck', () => {
             beforeEach(() => {
                 document.body.innerHTML =
                     '<div>' +
-                    '  <image class="customClass" />' +
+                    '  <img class="customClass" />' +
                     '</div>';
                 document.querySelectorAll = jest.fn((_selector: string) => [document.querySelector('img.customClass')]);
                 console.warn = jest.fn();
@@ -168,7 +168,7 @@ describe('HtmlElementsCheck', () => {
 
                     document.body.innerHTML =
                         '<div>' +
-                        '  <image class="customClass" />' +
+                        '  <img class="customClass" />' +
                         '</div>';
 
                     const IMAGE: HTMLImageElement = document.querySelector('img.customClass') as HTMLImageElement;

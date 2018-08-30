@@ -1,10 +1,17 @@
 import LazyLoad from '../../src/runtime/lazy_load';
 import { ILazyLoad } from '../../src/runtime/interfaces/lazy_load.interface';
 import { consoleMessage } from '../../src/runtime/helpers/console.helpers';
-
+import { InjectCSS } from '../../src/runtime/inject_css';
 /* tslint:disable no-unused-expression */
 describe('LazyLoad', () => {
     const QUERY_SELECTOR_ALL: any = document.querySelectorAll;
+    const REMOVE_EVENT_LISTENER: any = document.removeEventListener;
+    const ADD_EVENT_LISTENER: any = document.addEventListener;
+
+    afterEach(() => {
+        document.removeEventListener = REMOVE_EVENT_LISTENER;
+        document.addEventListener = ADD_EVENT_LISTENER;
+    });
 
     describe('execute', () => {
         test('it clears all existing intervals', () => {
@@ -12,10 +19,10 @@ describe('LazyLoad', () => {
 
             document.body.innerHTML =
                 '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                 '</div>';
 
             const LAZY_LOAD: LazyLoad = new LazyLoad();
@@ -25,22 +32,12 @@ describe('LazyLoad', () => {
             expect(window.clearInterval).toHaveBeenCalledTimes(1);
         });
 
-        test('it removes scroll event listeners', () => {
-            document.removeEventListener = jest.fn();
+        test('requests CSS injection', () => {
+            InjectCSS.execute = jest.fn();
 
-            document.body.innerHTML =
-                '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
-                '</div>';
+            new LazyLoad();
 
-            const LAZY_LOAD: LazyLoad = new LazyLoad();
-
-            LAZY_LOAD.execute();
-
-            expect(document.removeEventListener).toHaveBeenCalledTimes(2);
+            expect(InjectCSS.execute).toHaveBeenCalled();
         });
     });
 
@@ -48,10 +45,15 @@ describe('LazyLoad', () => {
         describe('images', () => {
             beforeEach(() => {
                 document.body.innerHTML =
-                    '<image id="image-0" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '<image id="image-1" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '<image id="image-2" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '<image id="image-3" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
+                    '<img id="image-0" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                    '<img id="image-1" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                    '<img id="image-2" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                    '<img id="image-3" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
+            });
+
+            afterEach(() => {
+                document.removeEventListener = REMOVE_EVENT_LISTENER;
+                document.addEventListener = ADD_EVENT_LISTENER;
             });
 
             test('images near or in view get loaded immediately', () => {
@@ -75,12 +77,10 @@ describe('LazyLoad', () => {
 
             test('scroll event listener gets added', () => {
                 document.addEventListener = jest.fn();
-                document.removeEventListener = jest.fn();
 
                 new LazyLoad();
 
                 expect(document.addEventListener).toBeCalledWith('scroll', expect.any(Function), {passive: true});
-                expect(document.removeEventListener).toBeCalledWith('scroll', expect.any(Function));
             });
 
             test('scroll event listener does not get duplicated', () => {
@@ -137,26 +137,26 @@ describe('LazyLoad', () => {
                 beforeEach(() => {
                     document.body.innerHTML =
                         '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                        '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                        '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                        '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                        '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                        '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                        '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                        '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                        '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                         '</div>';
                 });
 
                 test('first image in each carousel gets loaded immediately', () => {
                     document.body.innerHTML =
                         '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                        '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                        '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                        '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                        '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                        '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                        '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                        '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                        '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                         '</div>' +
                         '<div id="carousel-1" class="optimusIMG-carousel" data-optimus-interval="5000">' +
-                        '  <image id="image-4" data-optimus-lazy-src="https://www.foo.bar/img4.jpeg" />' +
-                        '  <image id="image-5" data-optimus-lazy-src="https://www.foo.bar/img5.jpeg" />' +
-                        '  <image id="image-6" data-optimus-lazy-src="https://www.foo.bar/img6.jpeg" />' +
-                        '  <image id="image-7" data-optimus-lazy-src="https://www.foo.bar/img7.jpeg" />' +
+                        '  <img id="image-4" data-optimus-lazy-src="https://www.foo.bar/img4.jpeg" />' +
+                        '  <img id="image-5" data-optimus-lazy-src="https://www.foo.bar/img5.jpeg" />' +
+                        '  <img id="image-6" data-optimus-lazy-src="https://www.foo.bar/img6.jpeg" />' +
+                        '  <img id="image-7" data-optimus-lazy-src="https://www.foo.bar/img7.jpeg" />' +
                         '</div>';
 
                     const IMG_0: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
@@ -214,10 +214,10 @@ describe('LazyLoad', () => {
                             '<div id="carousel-0" class="optimusIMG-carousel" data-optimus-interval="5000">' +
                             '  <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="next">Next</div>' +
                             '  <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="previous">Previous</div>' +
-                            '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                            '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                            '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                            '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                            '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                            '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                            '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                            '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                             '  <div class="indicators">' +
                             '   <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="0">0</div>' +
                             '   <div class="optimusIMG-carousel--toggle-btn" data-optimus-img-index="1">1</div>' +
@@ -366,9 +366,9 @@ describe('LazyLoad', () => {
 
                     document.body.innerHTML =
                         '<div id="carousel-0" class="optimusIMG-carousel">' +
-                        '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                        '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                        '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                        '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                        '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                        '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
                         '</div>';
                 });
 
@@ -410,10 +410,10 @@ describe('LazyLoad', () => {
 
             beforeEach(() => {
                 document.body.innerHTML =
-                    '<image id="image-0" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '<image id="image-1" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '<image id="image-2" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '<image id="image-3" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
+                    '<img id="image-0" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                    '<img id="image-1" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                    '<img id="image-2" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                    '<img id="image-3" class="customClass" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
             });
 
             test('images near or in view get loaded immediately', () => {
@@ -424,6 +424,7 @@ describe('LazyLoad', () => {
             });
 
             test('images which werent loaded yet get analysed for loading on scrolling', () => {
+                document.querySelectorAll = QUERY_SELECTOR_ALL;
                 document.querySelectorAll = jest.fn().mockReturnValue(document.querySelectorAll('img'));
                 LAZY_LOAD.execute();
 
@@ -445,26 +446,26 @@ describe('LazyLoad', () => {
             beforeEach(() => {
                 document.body.innerHTML =
                     '<div id="carousel-0" class="customClass" data-optimus-interval="5000">' +
-                    '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                    '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                    '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                    '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                    '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                     '</div>';
             });
 
             test('the first image in each carousel gets loaded immediately', () => {
                 document.body.innerHTML =
                     '<div id="carousel-0" class="customClass" data-optimus-interval="5000">' +
-                    '  <image id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '  <image id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '  <image id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '  <image id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+                    '  <img id="image-0" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+                    '  <img id="image-1" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+                    '  <img id="image-2" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+                    '  <img id="image-3" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
                     '</div>' +
                     '<div id="carousel-1" class="customClass" data-optimus-interval="5000">' +
-                    '  <image id="image-4" data-optimus-lazy-src="https://www.foo.bar/img4.jpeg" />' +
-                    '  <image id="image-5" data-optimus-lazy-src="https://www.foo.bar/img5.jpeg" />' +
-                    '  <image id="image-6" data-optimus-lazy-src="https://www.foo.bar/img6.jpeg" />' +
-                    '  <image id="image-7" data-optimus-lazy-src="https://www.foo.bar/img7.jpeg" />' +
+                    '  <img id="image-4" data-optimus-lazy-src="https://www.foo.bar/img4.jpeg" />' +
+                    '  <img id="image-5" data-optimus-lazy-src="https://www.foo.bar/img5.jpeg" />' +
+                    '  <img id="image-6" data-optimus-lazy-src="https://www.foo.bar/img6.jpeg" />' +
+                    '  <img id="image-7" data-optimus-lazy-src="https://www.foo.bar/img7.jpeg" />' +
                     '</div>';
 
                 const IMG_0: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;

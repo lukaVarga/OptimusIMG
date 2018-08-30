@@ -4,6 +4,9 @@
   "description": "A Node.js module for optimizing images in build and runtime",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "bin": {
+    "prepare-progressive-images": "./bin/prepare_progressive_images.js"
+  },
   "scripts": {
     "build:javascript-version": "rimraf build && tsc",
     "build:production-runtime": "rimraf dist && webpack -p",
@@ -112,6 +115,9 @@
     ]
   },
   "dependencies": {
-    "codecov": "^3.0.4"
+    "codecov": "^3.0.4",
+    "jest-plugin-fs": "^2.9.0",
+    "jimp": "^0.3.7",
+    "promptly": "^3.0.3"
   }
 }
