@@ -117,7 +117,7 @@
   "dependencies": {
     "codecov": "^3.0.4",
     "jest-plugin-fs": "^2.9.0",
-    "jimp": "^0.3.7",
+    "jimp": "^0.3.11",
     "promptly": "^3.0.3"
   }
 }
