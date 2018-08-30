@@ -8,8 +8,8 @@ describe('HtmlElementsCheck', () => {
     describe('default configuration', () => {
         describe('checkPictureElementPresence', () => {
             beforeAll(() => {
-                Object.defineProperty(HTMLImageElement.prototype, 'naturalHeight', { get: (): number => 50 });
-                Object.defineProperty(HTMLImageElement.prototype, 'naturalWidth', { get: (): number => 50 });
+                Object.defineProperty(HTMLImageElement.prototype, 'naturalHeight', {get: (): number => 50});
+                Object.defineProperty(HTMLImageElement.prototype, 'naturalWidth', {get: (): number => 50});
             });
 
             beforeEach(() => {
