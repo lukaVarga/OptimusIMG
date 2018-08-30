@@ -1,12 +1,15 @@
 import { ILazyLoad, ILazyLoadCarouselInterval } from './interfaces/lazy_load.interface';
 import { consoleMessage } from './helpers/console.helpers';
 import ProgressiveLoad from './progressive_load';
+import { InjectCSS } from './inject_css';
 
 // For ensuring all events are properly cleared from whichever instance of LazyLoad, eg. if user does new LazyLoad(); multiple times
 let cachedLazyLoadRef: LazyLoad;
 
 export default class LazyLoad {
     constructor(configuration?: ILazyLoad) {
+        InjectCSS.execute();
+
         if (configuration) {
             this._configuration = {...this._configuration, ...configuration};
         }

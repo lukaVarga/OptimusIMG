@@ -1,6 +1,7 @@
 import LazyLoad from '../../src/runtime/lazy_load';
 import { ILazyLoad } from '../../src/runtime/interfaces/lazy_load.interface';
 import { consoleMessage } from '../../src/runtime/helpers/console.helpers';
+import { InjectCSS } from '../../src/runtime/inject_css';
 /* tslint:disable no-unused-expression */
 describe('LazyLoad', () => {
     const QUERY_SELECTOR_ALL: any = document.querySelectorAll;
@@ -29,6 +30,14 @@ describe('LazyLoad', () => {
             LAZY_LOAD.execute();
 
             expect(window.clearInterval).toHaveBeenCalledTimes(1);
+        });
+
+        test('requests CSS injection', () => {
+            InjectCSS.execute = jest.fn();
+
+            new LazyLoad();
+
+            expect(InjectCSS.execute).toHaveBeenCalled();
         });
     });
 

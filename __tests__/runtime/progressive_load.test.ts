@@ -1,5 +1,6 @@
 import ProgressiveLoad, { PROGRESSIVE_IMAGE_CONFIG } from '../../src/runtime/progressive_load';
 import { HtmlElementsHelpers } from '../../src/runtime/helpers/html_elements.helpers';
+import { InjectCSS } from '../../src/runtime/inject_css';
 
 describe('ProgressiveLoad', () => {
     beforeEach(() => {
@@ -30,7 +31,23 @@ describe('ProgressiveLoad', () => {
         SPY.mockRestore();
     });
 
+    test('execute requests CSS injection', () => {
+        InjectCSS.execute = jest.fn();
+
+        ProgressiveLoad.execute();
+
+        expect(InjectCSS.execute).toHaveBeenCalled();
+    });
+
     describe('loadProgressiveImage', () => {
+        test('requests CSS injection', () => {
+            InjectCSS.execute = jest.fn();
+
+            ProgressiveLoad.loadProgressiveImage(document.getElementById('image-3') as HTMLImageElement);
+
+            expect(InjectCSS.execute).toHaveBeenCalled();
+        });
+
         test('it skips images which are not of OptimusIMG-progressive origin', () => {
             const SPY: any = jest.spyOn(HtmlElementsHelpers, 'wrapImage');
             ProgressiveLoad.loadProgressiveImage(document.getElementById('image-3') as HTMLImageElement);
@@ -66,46 +83,91 @@ describe('ProgressiveLoad', () => {
             expect(document.body.innerHTML).toEqual(EXPECTED);
         });
 
-        test('it swaps images once high res image is available', () => {
-            document.body.innerHTML = '<img id="image-0" class="foo" src="https://www.foo.bar/img0-OptimusIMG-progressive.jpeg" ' +
-                'data-optimus-lazy-src="https://www.foo.bar/img0-OptimusIMG-progressive.jpeg">';
+        describe('load timeout', () => {
+            beforeEach(() => {
+                jest.useFakeTimers();
+                document.body.innerHTML = '<img id="image-0" class="foo" src="https://www.foo.bar/img0-OptimusIMG-progressive.jpeg" ' +
+                    'data-optimus-lazy-src="https://www.foo.bar/img0-OptimusIMG-progressive.jpeg">';
+            });
 
-            const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
-            ProgressiveLoad.loadProgressiveImage(IMAGE);
+            afterEach(() => {
+                jest.useRealTimers();
+            });
 
-            const NEW_IMAGE: HTMLImageElement = document.querySelector('.optimusIMG-progressive-image') as HTMLImageElement;
+            test('it adds loaded class to wrapper', () => {
+                const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
+                ProgressiveLoad.loadProgressiveImage(IMAGE);
 
-            NEW_IMAGE.dispatchEvent(new Event('load'));
+                const NEW_IMAGE: HTMLImageElement = document.querySelector('.optimusIMG-progressive-image') as HTMLImageElement;
 
-            const EXPECTED: string = '<img id="image-0" class="foo" src="https://www.foo.bar/img0.jpeg" ' +
-                'data-optimus-lazy-src="https://www.foo.bar/img0.jpeg">';
+                NEW_IMAGE.dispatchEvent(new Event('load'));
 
-            expect(document.body.innerHTML).toEqual(EXPECTED);
-        });
+                expect((IMAGE.parentElement as HTMLElement).className.includes(PROGRESSIVE_IMAGE_CONFIG.wrapperClassLoadedName)).toBe(true);
+            });
 
-        test('it removes high image res load event listener once the first load is triggered', () => {
-            const SPY: any = jest.spyOn(HtmlElementsHelpers, 'unwrapImage');
+            test('it doesnt fail if it cannot find parentElement of IMAGE', () => {
+                const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
+                ProgressiveLoad.loadProgressiveImage(IMAGE);
 
-            document.body.innerHTML = '<img id="image-0" class="foo" src="https://www.foo.bar/img0-OptimusIMG-progressive.jpeg" ' +
-                'data-optimus-lazy-src="https://www.foo.bar/img0-OptimusIMG-progressive.jpeg">';
+                const NEW_IMAGE: HTMLImageElement = document.querySelector('.optimusIMG-progressive-image') as HTMLImageElement;
+                Object.defineProperty(NEW_IMAGE, 'parentElement', {get: (): null => null});
 
-            const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
-            ProgressiveLoad.loadProgressiveImage(IMAGE);
+                NEW_IMAGE.dispatchEvent(new Event('load'));
+            });
 
-            const NEW_IMAGE: HTMLImageElement = document.querySelector('.optimusIMG-progressive-image') as HTMLImageElement;
+            test('it calls setTimeout', () => {
+                const SPY: any = jest.spyOn(window, 'setTimeout');
+                const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
+                ProgressiveLoad.loadProgressiveImage(IMAGE);
 
-            NEW_IMAGE.dispatchEvent(new Event('load'));
+                const NEW_IMAGE: HTMLImageElement = document.querySelector('.optimusIMG-progressive-image') as HTMLImageElement;
 
-            expect(HtmlElementsHelpers.unwrapImage).toBeCalledWith(NEW_IMAGE);
+                NEW_IMAGE.dispatchEvent(new Event('load'));
 
-            // To ensure we get a clear, new result in the next expect block
-            SPY.mockClear();
+                expect(SPY).toBeCalledWith(expect.any(Function), 500);
 
-            NEW_IMAGE.dispatchEvent(new Event('load'));
+                SPY.mockRestore();
+                jest.clearAllTimers();
+            });
 
-            expect(HtmlElementsHelpers.unwrapImage).not.toBeCalled();
+            test('it swaps images once high res image is available', () => {
+                const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
+                ProgressiveLoad.loadProgressiveImage(IMAGE);
 
-            SPY.mockRestore();
+                const NEW_IMAGE: HTMLImageElement = document.querySelector('.optimusIMG-progressive-image') as HTMLImageElement;
+
+                NEW_IMAGE.dispatchEvent(new Event('load'));
+                jest.runAllTimers();
+
+                const EXPECTED: string = '<img id="image-0" class="foo" src="https://www.foo.bar/img0.jpeg" ' +
+                    'data-optimus-lazy-src="https://www.foo.bar/img0.jpeg">';
+
+                expect(document.body.innerHTML).toEqual(EXPECTED);
+            });
+
+            test('it removes high image res load event listener once the first load is triggered', () => {
+                const SPY: any = jest.spyOn(HtmlElementsHelpers, 'unwrapImage');
+
+                const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
+                ProgressiveLoad.loadProgressiveImage(IMAGE);
+
+                const NEW_IMAGE: HTMLImageElement = document.querySelector('.optimusIMG-progressive-image') as HTMLImageElement;
+
+                NEW_IMAGE.dispatchEvent(new Event('load'));
+                jest.runAllTimers();
+
+                expect(HtmlElementsHelpers.unwrapImage).toBeCalledWith(NEW_IMAGE);
+
+                // To ensure we get a clear, new result in the next expect block
+                SPY.mockClear();
+
+                NEW_IMAGE.dispatchEvent(new Event('load'));
+                jest.runAllTimers();
+
+                expect(HtmlElementsHelpers.unwrapImage).not.toBeCalled();
+
+                SPY.mockRestore();
+            });
         });
     });
 });
