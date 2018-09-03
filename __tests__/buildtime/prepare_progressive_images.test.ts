@@ -1,5 +1,5 @@
 import { prepareProgressiveImages } from '../../src/buildtime/prepare_progressive_images';
-import promptly = require('promptly');
+import promptly from 'promptly';
 import { FileHelpers } from '../../src/buildtime/helpers/file.helpers';
 import { consoleMessage } from '../../src/runtime/helpers/console.helpers';
 // @ts-ignore
