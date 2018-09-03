@@ -21,6 +21,12 @@ The source is written in Typescript, while the `dist` and `build` files are in E
 ## Installation
 `npm install --save optimusimg`
 
+## Requirements
+`node >= 8` and `npm >= 5.2.8`. It is possible to use `npm < 5.2.8` but you will need to install additional global npm packages (eg. `npx`).
+
+## Browser support
+OptimusIMG is supported in all major browsers which support ES5 (`IE >= 10`, `Chrome >= 23`, `Firefox >= 21`, `Edge`, `Safari >= 6`, `Opera >= 15`)
+
 ## Useage
 Once you add OptimusIMG to your project (npm, submodule, or,
 when using only runtime optimisations, by linking minified js file for a specific version - https://unpkg.com/optimusimg@:version/dist/OptimusIMG.min.js,
@@ -52,6 +58,25 @@ To ensure `LazyLoad` works properly, you will have to:
 If your carousel automatically switches images based on a set time interval, the `data-optimus-interval` should match that interval
 - add `data-optimus-img-index` to all carousel toggle image buttons which have the `carouselToggleImageBtn` class.
 Allowed values are: `next`, `previous` (for next/previous buttons) or any image index, eg `5`, for buttons which allow the user to directly toggle to that specific image.
+
+It is strongly advised you use the `LazyLoad` functionality, which will also make use of the `ProgressiveLoad` functionality automatically (in case any of the images that are lazily loaded is of OptimusIMG progressive image variant).
+
+#### ProgressiveLoad
+`ProgressiveLoad` is responsible for progressively loading images. It works in conjunction with `prepare-progressive-images` buildtime function which generates images to be used for progressive loading (see details in the buildtime section).
+`ProgressiveLoad` is not configurable.
+
+To ensure `ProgressiveLoad` works properly, you will have to:
+- generate progressive images using `npx prepare-progressive-images` (see details in buildtime section)
+- if you are using the OptimusIMG `LazyLoad` function
+    - change `data-optimus-lazy-src` from eg. `/images/foobar.jpeg` to the (generated with `npx prepare-progressive-images`) progressive image version path `/images/foobar-OptimusIMG-progressive.jpeg`,
+    OptimusIMG will then handle the progressive load functionality under the hood automatically both for single images and carousels which are lazily loaded
+- else
+    - change `src` from eg. `/images/foobar.jpeg` to the (generated with `npx prepare-progressive-images`) progressive image version path `/images/foobar-OptimusIMG-progressive.jpeg`
+    - manually trigger `OptimusIMG.ProgressiveLoad.execute()` function whenever you load new images into view (eg. carousel image change event for carousels which are not utilizing OptimusIMG `LazyLoad` functionality, on document
+    ready and ajax responses which load new images in case you are utilizing jQuery for that, on component init/mount/etc lifecycle event in case you are using eg. Angular, Vue.js, ReactJS, ..)
+
+`ProgressiveLoad` utilizes CSS transitions to ensure a performant and easy on the eyes transition from the generated progressive image variant (which is used for ensuring as quick as possible initial webpage load),
+to the high quality original image variant as soon as the original variant is loaded.
 
 #### Triggering functions
 You can trigger re-run of any OptimusIMG function.
@@ -87,6 +112,9 @@ function loadPartial() {
   xhttp.send();
 }
 ```
+
+**Please note**: `ProgressiveLoad` is an exception - in case you wish to trigger `ProgressiveLoad` manually, you will **only** be able to trigger it by calling the `.execute()` method,
+eg. `OptimusIMG.ProgressiveLoad.execute()`, calling `OptimusIMG.ProgressiveLoad()` will **not** trigger the progressive load functionality.
 
 #### React example
 The following will trigger lazy loading after a component is mounted.
@@ -152,6 +180,9 @@ To run buildtime functions, you need to `npm install --save optimusimg` (if you 
 Prepare progressive images function supports images in `.jpg` (or `.jpeg`) and `.png` formats / file extensions.
 The function will make a copy of all images within the folder (and all subfolders) you specify and modify them to be used in runtime for progressive loading.
 The images will be in the same formats as the originals and will differ from the original image by `-OptimusIMG-progressive` extension.
+
+The progressive image variants will, in conjunction with the runtime `ProgressiveLoad` functionality, be used for ensuring
+the initial load of the webpage is as quick as possible.
 
 Please do not change the name of these images.
 
