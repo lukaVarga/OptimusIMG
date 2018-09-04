@@ -9,7 +9,7 @@ export class InjectCSS {
         const CSS: HTMLStyleElement = document.createElement('style');
         CSS.id = 'optimusIMG-css';
         CSS.innerHTML =
-            '.optimusIMG:not([src^="http"]){opacity: 0;}' +
+            '.optimusIMG:not([src*="/"]){opacity: 0 !important;}' +
             '.optimusIMG-progressive-wrapper {overflow: hidden;position: relative;}' +
             '.optimusIMG-progressive-wrapper .optimusIMG-progressive-image {' +
             '  filter: blur(8px);' +
