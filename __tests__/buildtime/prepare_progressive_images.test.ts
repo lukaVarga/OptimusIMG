@@ -14,6 +14,8 @@ describe('prepareProgressiveImages', () => {
         '__tests__/buildtime/img-samples/sample-3.gif',
         '__tests__/buildtime/img-samples/sample-4.png',
         '__tests__/buildtime/img-samples/sample-5.jpg',
+        '__tests__/buildtime/img-samples/sample-6.jpg',
+        '__tests__/buildtime/img-samples/sample-6-OptimusIMG-progressive.jpg',
     ];
 
     const GENERATED_IMAGES: string[] = [
@@ -52,10 +54,15 @@ describe('prepareProgressiveImages', () => {
         await expect(console.log).toHaveBeenCalledWith(consoleMessage('started preparing progressive images'));
     });
 
-    test('it notifies user that it finished preparing images', async () => {
+    test('it skips images which already have a progressive version', async () => {
         console.log = jest.fn();
         await prepareProgressiveImages();
-        await expect(console.log).toHaveBeenCalledWith(consoleMessage('finished preparing progressive images'));
+        await expect(console.log).not
+            .toHaveBeenCalledWith(consoleMessage('prepared image __tests__/buildtime/img-samples/sample-6-OptimusIMG-progressive.jpg'));
+
+        await expect(console.log)
+            .toHaveBeenCalledWith(consoleMessage('skipping image __tests__/buildtime/img-samples/sample-6.jpg ' +
+                'as it already has a progressive version'));
     });
 
     test('it notifies user for each prepared image', async () => {

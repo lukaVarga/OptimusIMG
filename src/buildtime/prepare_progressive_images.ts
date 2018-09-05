@@ -11,16 +11,22 @@ export async function prepareProgressiveImages(): Promise<boolean> {
 
     console.log(consoleMessage('started preparing progressive images'));
 
-    let images: string[] = FileHelpers.findFilesInDir(path, FileHelpers.IMAGE_REGEX);
+    const IMAGES: string[] = FileHelpers.findFilesInDir(path, FileHelpers.IMAGE_REGEX);
 
-    images = images.filter((img: string) => !img.match(PROGRESSIVE_IMAGE_CONFIG.srcIdentifier));
+    const FILTERED_IMAGES: string[] = IMAGES.filter((img: string) => !img.match(PROGRESSIVE_IMAGE_CONFIG.srcIdentifier));
 
-    await PolyfillHelpers.asyncForEach(images, async (img: string): Promise<boolean> => {
+    await PolyfillHelpers.asyncForEach(FILTERED_IMAGES, async (img: string): Promise<boolean> => {
         const IMG_CONSTRUCT: string[] = img.split(FileHelpers.IMAGE_REGEX).filter((val: string | undefined) => val !== undefined && val !== '');
+
+        const IMAGE_NAME: string = IMG_CONSTRUCT[0] + PROGRESSIVE_IMAGE_CONFIG.srcIdentifier + IMG_CONSTRUCT[1];
+
+        if (IMAGES.some((image: string) => image === IMAGE_NAME)) {
+            console.log(consoleMessage('skipping image ' + IMG_CONSTRUCT[0] + IMG_CONSTRUCT[1] + ' as it already has a progressive version'));
+            return true;
+        }
 
         try {
             const IMAGE: Jimp = await Jimp.read(img);
-            const IMAGE_NAME: string = IMG_CONSTRUCT[0] + PROGRESSIVE_IMAGE_CONFIG.srcIdentifier + IMG_CONSTRUCT[1];
             await IMAGE.scale(0.2).blur(8).write(IMAGE_NAME);
 
             console.log(consoleMessage('prepared image ' + IMAGE_NAME));
