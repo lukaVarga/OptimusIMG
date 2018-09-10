@@ -5,7 +5,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "bin": {
-    "prepare-progressive-images": "./bin/prepare_progressive_images.js"
+    "prepare-progressive-images": "./bin/prepare_progressive_images.js",
+    "analyse-images": "./bin/analyse_images.js"
   },
   "scripts": {
     "build:javascript-version": "rimraf build && tsc",

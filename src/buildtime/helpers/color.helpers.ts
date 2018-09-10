@@ -1,4 +1,4 @@
-import { IColorLab, IColorRGB, IColorRGBA, IColorXYZ } from './interfaces/color.helpers.interface';
+import { IColorLab, IColorRGB, IColorRGBA, IColorXYZ, TColorDifferences } from './interfaces/color.helpers.interface';
 
 export class ColorHelpers {
     public static colorDiff(color1: IColorRGBA, color2: IColorRGBA, background: IColorRGB): number {
@@ -10,10 +10,10 @@ export class ColorHelpers {
                Math.pow(LAB_COLOR1.b - LAB_COLOR2.b, 2));
     }
 
-    public static colorDiffCategory(diff: number): string {
-        if (diff <= 1.0) {
+    public static colorDiffCategory(diff: number): TColorDifferences {
+        if (diff <= 1) {
             return 'difference-not-perceptible';
-        } else if (diff < 2) {
+        } else if (diff < 3) {
             return 'difference-hardly-perceptible';
         } else if (diff < 10) {
             return 'difference-perceptible';
