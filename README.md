@@ -10,13 +10,13 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=for-the-badge)](https://github.com/semantic-release/semantic-release)
 
 # OptimusIMG
-A Node.js module for optimising images in build and runtime.
+OptimusIMG is a Node.js module for optimising images in build and runtime.
 It helps you detect which images need further optimisation during your web application
 build process and uses optimisation tricks for a faster and better user experience
 during runtime.
 
 OptimusIMG runtime library has no JavaScript dependencies, it can run in any SPA (Angular, React, Vue, ...) or any classic webpage environment.
-The source is written in Typescript, while the `dist` and `build` files are in ES5.
+The source is written in Typescript, while the `dist` and `build` files are compiled to plain JS (ES5).
 
 ## Installation
 `npm install --save optimusimg`
@@ -31,10 +31,10 @@ OptimusIMG is supported in all major browsers which support ES5 (`IE >= 10`, `Ch
 Once you add OptimusIMG to your project (npm, submodule, or,
 when using only runtime optimisations, by linking minified js file for a specific version - https://unpkg.com/optimusimg@:version/dist/OptimusIMG.min.js,
 or for latest version - https://unpkg.com/optimusimg/dist/OptimusIMG.min.js),
-you can then use OptimusIMG's functions for optimisation.
+you can use OptimusIMG's functions for optimisation.
 
 ### Runtime useage
-OptimusIMG currently has two runtime branches - `HtmlElementsCheck` and `LazyLoad`.
+OptimusIMG currently has three runtime branches - `HtmlElementsCheck`, `LazyLoad` and `ProgressiveLoad`.
 
 #### HtmlElementsCheck
 `HtmlElementsCheck` will output console warnings if it detects any images with the proper class which are not properly prepared for responsive development.
@@ -162,15 +162,17 @@ export class CarouselComponent implements OnInit {
     OptimusIMG.LazyLoad();
     // Triggers html elements check
     OptimusIMG.HtmlElementsCheck();
+    // Triggers progressive load
+    OptimusIMG.ProgressiveLoad.execute();
 </script>
 ```
 
 ### Buildtime useage
-OptimusIMG comes with buildtime scripts. For instance, OptimusIMG will prepare a progressive version of your images
+OptimusIMG comes with buildtime scripts. For example, OptimusIMG will prepare a progressive version of your images
 which will be used for speeding up the initial load and will, in combination with runtime `ProgressiveImages` function,
 automatically load the high-res (original) version of your image and swap the images once the high-res version is loaded.
 
-OptimusIMG also has an image analysis buildtime function which will warn you in case it detects possible optimisations.
+OptimusIMG also has an image analysis buildtime function which will warn you in case it detects possible optimisations for specific images.
 
 To run buildtime functions, you need to `npm install --save optimusimg` (if you haven't done so already) and then use `npx function` (eg. `npx prepare-progressive-images`):
 
