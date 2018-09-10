@@ -93,8 +93,8 @@ describe('prepareProgressiveImages', () => {
             await PolyfillHelpers.asyncForEach(GENERATED_IMAGES, async (imagePath: string): Promise<boolean> => {
                 const PROGRESSIVE_IMAGE: Jimp = await Jimp.read(imagePath);
                 const ORIGINAL_IMAGE: Jimp = await Jimp.read(imagePath.replace('-OptimusIMG-progressive', ''));
-                const EXPECTED_HEIGHT: number = ORIGINAL_IMAGE.bitmap.height * 0.2;
-                const EXPECTED_WIDTH: number = ORIGINAL_IMAGE.bitmap.width * 0.2;
+                const EXPECTED_HEIGHT: number = Math.floor(ORIGINAL_IMAGE.bitmap.height * 0.2);
+                const EXPECTED_WIDTH: number = Math.floor(ORIGINAL_IMAGE.bitmap.width * 0.2);
 
                 if (PROGRESSIVE_IMAGE.bitmap.height === EXPECTED_HEIGHT && PROGRESSIVE_IMAGE.bitmap.width === EXPECTED_WIDTH) {
                     return true;

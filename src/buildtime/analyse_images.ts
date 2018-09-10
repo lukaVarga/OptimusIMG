@@ -7,6 +7,7 @@ import { PolyfillHelpers } from '../helpers/polyfill.helpers';
 import { PROGRESSIVE_IMAGE_CONFIG } from '../runtime/progressive_load';
 import { IColorRGBA, TColorDifferences } from './helpers/interfaces/color.helpers.interface';
 import { ColorHelpers } from './helpers/color.helpers';
+import { IImageCompressionLevel } from './helpers/interfaces/file.helpers.interface';
 
 export async function analyseImages(): Promise<boolean> {
     const path: string = await promptly.prompt('Path to images folder (defaults to public/images): ', {default: 'public/images'});
@@ -22,6 +23,18 @@ export async function analyseImages(): Promise<boolean> {
         console.log(consoleMessage('analysing image ' + img + ' ...'));
 
         try {
+            const COMPRESSION: IImageCompressionLevel = await FileHelpers.imageCompressionLevel(img);
+
+            if (COMPRESSION === 'low-compression') {
+                console.warn(consoleMessage('consider compressing ' + img + ' to achieve a quicker webpage load time ' +
+                    '(BIG LOAD TIME EFFECT)'));
+                return true;
+            } else if (COMPRESSION === 'medium-compression') {
+                console.log(consoleMessage('consider further compression of ' + img +
+                    ' to achieve a quicker webpage load time (MEDIUM LOAD TIME EFFECT)'));
+                return true;
+            }
+
             const IMAGE: Jimp = await Jimp.read(img);
             const COLOR_LIMIT: number = 128;
 

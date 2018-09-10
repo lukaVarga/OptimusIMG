@@ -59,6 +59,26 @@ describe('analyseImages', () => {
                 ' in SVG format for optimised load and display on different screens'));
     });
 
+    test('it notifies user to consider compressing image which hasnt been compressed', async () => {
+        console.warn = jest.fn();
+        FileHelpers.findFilesInDir = jest.fn().mockReturnValue(['__tests__/buildtime/img-samples/sample-8-uncompressed.jpg']);
+
+        await analyseImages();
+        await expect(console.warn).toHaveBeenCalledWith(
+            consoleMessage('consider compressing __tests__/buildtime/img-samples/sample-8-uncompressed.jpg' +
+                ' to achieve a quicker webpage load time (BIG LOAD TIME EFFECT)'));
+    });
+
+    test('it notifies user to consider compressing image with medium compression level', async () => {
+        console.log = jest.fn();
+        FileHelpers.findFilesInDir = jest.fn().mockReturnValue(['__tests__/buildtime/img-samples/sample-5.jpg']);
+
+        await analyseImages();
+        await expect(console.log).toHaveBeenCalledWith(
+            consoleMessage('consider further compression of __tests__/buildtime/img-samples/sample-5.jpg' +
+                ' to achieve a quicker webpage load time (MEDIUM LOAD TIME EFFECT)'));
+    });
+
     test('it notifies user if it encounters error for specific file', async () => {
         console.error = jest.fn();
         FileHelpers.findFilesInDir = jest.fn().mockReturnValue(IMG_SAMPLES);
