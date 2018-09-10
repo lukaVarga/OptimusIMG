@@ -170,6 +170,8 @@ OptimusIMG comes with buildtime scripts. For instance, OptimusIMG will prepare a
 which will be used for speeding up the initial load and will, in combination with runtime `ProgressiveImages` function,
 automatically load the high-res (original) version of your image and swap the images once the high-res version is loaded.
 
+OptimusIMG also has an image analysis buildtime function which will warn you in case it detects possible optimisations.
+
 To run buildtime functions, you need to `npm install --save optimusimg` (if you haven't done so already) and then use `npx function` (eg. `npx prepare-progressive-images`):
 
 #### Requirements for buildtime functions
@@ -185,6 +187,12 @@ The progressive image variants will, in conjunction with the runtime `Progressiv
 the initial load of the webpage is as quick as possible.
 
 Please do not change the name of these images.
+
+#### npx analyse-images
+Analyse images function supports images in `.jpg` (or `.jpeg`) and `.png` formats / file extensions.
+The function will analyse all images within the folder (and all subfolders) you specify and let you know of possible optimisations.
+
+Please note: in case you have a lot of (big) images in your project, the function might take a couple of minutes to finish analysis.
 
 ## Contributing
 Clone, `npm install`, code, lint, test, push and open a pull request.
