@@ -1,7 +1,8 @@
 [![Travis build](https://img.shields.io/travis/lukaVarga/OptimusIMG.svg?style=for-the-badge)](https://travis-ci.org/lukaVarga/OptimusIMG)
 [![Codecov coverage](https://img.shields.io/codecov/c/github/lukaVarga/OptimusIMG.svg?style=for-the-badge)](https://codecov.io/gh/lukaVarga/OptimusIMG)
 
-![GitHub repo size in bytes](https://img.shields.io/github/repo-size/lukaVarga/OptimusIMG.svg?style=for-the-badge)
+
+[![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/optimusimg.svg?style=for-the-badge)](https://bundlephobia.com/result?p=optimusimg@2.2.0)
 ![GitHub issues](https://img.shields.io/github/issues/lukaVarga/OptimusIMG.svg?style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/lukaVarga/OptimusIMG.svg?style=for-the-badge)
 
