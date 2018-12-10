@@ -11,7 +11,8 @@ describe('ProgressiveLoad', () => {
             '   <img id="image-1" class="optimusIMG-progressive-image" src="https://www.foo.bar/img1.jpeg" />' +
             '</div>' +
             '<img id="image-2" src="https://www.foo.bar/img2-OptimusIMG-progressive.jpeg" />' +
-            '<img id="image-3" src="https://www.foo.bar/img3.jpeg" />';
+            '<img id="image-3" src="https://www.foo.bar/img3.jpeg" />' +
+            '<img id="image-4" src="https://www.foo.bar/img4.jpeg" data-optimus-high-res-src="https://www.foo.bar/img4-highres.jpeg" />';
     });
 
     test('each progressive image that has no high res version sibling gets submitted for high res load after calling execute method', () => {
@@ -56,13 +57,24 @@ describe('ProgressiveLoad', () => {
             SPY.mockRestore();
         });
 
-        test('it wraps image of OptimusIMG-progressive origin', () => {
-            const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
-            const SPY: any = jest.spyOn(HtmlElementsHelpers, 'wrapImage');
-            ProgressiveLoad.loadProgressiveImage(IMAGE);
+        describe('progressive images', () => {
+            test('it wraps image of OptimusIMG-progressive origin', () => {
+                const IMAGE: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
+                const SPY: any = jest.spyOn(HtmlElementsHelpers, 'wrapImage');
+                ProgressiveLoad.loadProgressiveImage(IMAGE);
 
-            expect(HtmlElementsHelpers.wrapImage).toBeCalledWith(IMAGE, PROGRESSIVE_IMAGE_CONFIG.wrapperClassName);
-            SPY.mockRestore();
+                expect(HtmlElementsHelpers.wrapImage).toBeCalledWith(IMAGE, PROGRESSIVE_IMAGE_CONFIG.wrapperClassName);
+                SPY.mockRestore();
+            });
+
+            test('it wraps image of OptimusIMG-progressive origin', () => {
+                const IMAGE: HTMLImageElement = document.getElementById('image-4') as HTMLImageElement;
+                const SPY: any = jest.spyOn(HtmlElementsHelpers, 'wrapImage');
+                ProgressiveLoad.loadProgressiveImage(IMAGE);
+
+                expect(HtmlElementsHelpers.wrapImage).toBeCalledWith(IMAGE, PROGRESSIVE_IMAGE_CONFIG.wrapperClassName);
+                SPY.mockRestore();
+            });
         });
 
         test('it creates a duplicate of OptimusIMG-progressive origin image with high res version', () => {

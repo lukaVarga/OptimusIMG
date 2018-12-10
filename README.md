@@ -67,7 +67,7 @@ It is strongly advised you use the `LazyLoad` functionality, which will also mak
 `ProgressiveLoad` is not configurable.
 
 To ensure `ProgressiveLoad` works properly, you will have to:
-- generate progressive images using `npx prepare-progressive-images` (see details in buildtime section)
+- generate progressive images using `npx prepare-progressive-images` (see details in buildtime section) or generate your own versions of low resolution images and provide a high-resolution image URL as `data-optimus-high-res-src` image data property
 - if you are using the OptimusIMG `LazyLoad` function
     - change `data-optimus-lazy-src` from eg. `/images/foobar.jpeg` to the (generated with `npx prepare-progressive-images`) progressive image version path `/images/foobar-OptimusIMG-progressive.jpeg`,
     OptimusIMG will then handle the progressive load functionality under the hood automatically both for single images and carousels which are lazily loaded
@@ -156,7 +156,7 @@ export class CarouselComponent implements OnInit {
 
 ### Loading OptimusIMG via cdn and executing functions
 ```
-<script src="https://unpkg.com/optimusimg@1.1.1/dist/OptimusIMG.min.js"></script>
+<script src="https://unpkg.com/optimusimg@2.3.0/dist/OptimusIMG.min.js"></script>
 <script>
     ...
     // Triggers lazy load

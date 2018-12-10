@@ -17,11 +17,18 @@ export default class ProgressiveLoad {
 
     public static loadProgressiveImage(image: HTMLImageElement): void {
         InjectCSS.execute();
+        const PROGRESSIVE_SRC: string | null = image.getAttribute('data-optimus-high-res-src');
 
-        if (image.src.includes(PROGRESSIVE_IMAGE_CONFIG.srcIdentifier)) {
+        if (image.src.includes(PROGRESSIVE_IMAGE_CONFIG.srcIdentifier) || !!PROGRESSIVE_SRC) {
             const WRAPPER: HTMLElement = HtmlElementsHelpers.wrapImage(image, PROGRESSIVE_IMAGE_CONFIG.wrapperClassName);
             const HIGH_RES_IMAGE: HTMLImageElement = image.cloneNode() as HTMLImageElement;
-            HIGH_RES_IMAGE.src = HIGH_RES_IMAGE.src.replace(PROGRESSIVE_IMAGE_CONFIG.srcIdentifier, '');
+
+            if (image.src.includes(PROGRESSIVE_IMAGE_CONFIG.srcIdentifier)) {
+                HIGH_RES_IMAGE.src = HIGH_RES_IMAGE.src.replace(PROGRESSIVE_IMAGE_CONFIG.srcIdentifier, '');
+            } else {
+                HIGH_RES_IMAGE.src = PROGRESSIVE_SRC as string;
+            }
+
             HIGH_RES_IMAGE.setAttribute('data-optimus-lazy-src', HIGH_RES_IMAGE.src);
             HIGH_RES_IMAGE.className += ' ' +  PROGRESSIVE_IMAGE_CONFIG.className;
             WRAPPER.appendChild(HIGH_RES_IMAGE);
