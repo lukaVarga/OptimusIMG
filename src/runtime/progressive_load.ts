@@ -38,8 +38,8 @@ export default class ProgressiveLoad {
     }
 
     private static checkProgressiveImages(): void {
-        const IMAGES: NodeListOf<HTMLImageElement> =
-            document.querySelectorAll('[src*="' + PROGRESSIVE_IMAGE_CONFIG.srcIdentifier + '"]') as NodeListOf<HTMLImageElement>;
+        const QUERY: string = '[src*="' + PROGRESSIVE_IMAGE_CONFIG.srcIdentifier + '"], ' + '[data-optimus-high-res-src]';
+        const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll(QUERY) as NodeListOf<HTMLImageElement>;
 
         IMAGES.forEach((image: HTMLImageElement) => {
             if (!HtmlElementsHelpers.getSiblings(image, 'img.' + PROGRESSIVE_IMAGE_CONFIG.className).length) {

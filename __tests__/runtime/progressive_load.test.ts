@@ -20,15 +20,15 @@ describe('ProgressiveLoad', () => {
         ProgressiveLoad.loadProgressiveImage = jest.fn();
 
         const PROGRESSIVE_IMAGES: NodeListOf<HTMLImageElement> =
-            document.querySelectorAll('[src*="-OptimusIMG-progressive"]') as NodeListOf<HTMLImageElement>;
+            document.querySelectorAll('[src*="-OptimusIMG-progressive"], [data-optimus-high-res-src]') as NodeListOf<HTMLImageElement>;
 
         ProgressiveLoad.execute();
 
         expect(ProgressiveLoad.loadProgressiveImage).toBeCalledWith(document.getElementById('image-0'));
         expect(ProgressiveLoad.loadProgressiveImage).toBeCalledWith(document.getElementById('image-2'));
 
-        expect(PROGRESSIVE_IMAGES.length).toBe(3);
-        expect(ProgressiveLoad.loadProgressiveImage).toHaveBeenCalledTimes(2);
+        expect(PROGRESSIVE_IMAGES.length).toBe(4);
+        expect(ProgressiveLoad.loadProgressiveImage).toHaveBeenCalledTimes(3);
         SPY.mockRestore();
     });
 
