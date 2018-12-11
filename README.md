@@ -54,7 +54,7 @@ carouselToggleImageBtn?: string; // defaults to 'optimusIMG-carousel--toggle-btn
 ```
 
 To ensure `LazyLoad` works properly, you will have to:
-- change `src` property of images with `className` into a `data-optimus-lazy-src`, eg: change `<img src="foo" class="optimusIMG">` into `<img data-optimus-lazy-src="foo" class="optimusIMG">`
+- change `src` (or `srcset`, or both) property of images with `className` into a `data-optimus-lazy-src` (or into `data-optimus-lazy-srcset`, in case you are using `srcset`), eg: change `<img src="foo" srcset="bar" class="optimusIMG">` into `<img data-optimus-lazy-src="foo" data-optimus-lazy-srcset="bar" class="optimusIMG">`
 - add `data-optimus-interval` attribute to all carousels which have the `carouselClassName`. The value of the `data-optimus-interval` should be a number in milliseconds, greater than `1000`.
 If your carousel automatically switches images based on a set time interval, the `data-optimus-interval` should match that interval
 - add `data-optimus-img-index` to all carousel toggle image buttons which have the `carouselToggleImageBtn` class.
@@ -67,12 +67,12 @@ It is strongly advised you use the `LazyLoad` functionality, which will also mak
 `ProgressiveLoad` is not configurable.
 
 To ensure `ProgressiveLoad` works properly, you will have to:
-- generate progressive images using `npx prepare-progressive-images` (see details in buildtime section) or generate your own versions of low resolution images and provide a high-resolution image URL as `data-optimus-high-res-src` image data property
+- generate progressive images using `npx prepare-progressive-images` (see details in buildtime section) or generate your own versions of low resolution images and provide a high-resolution image URL as `data-optimus-high-res-src` (or as `data-optimus-high-res-srcset`) image data property
 - if you are using the OptimusIMG `LazyLoad` function
-    - change `data-optimus-lazy-src` from eg. `/images/foobar.jpeg` to the (generated with `npx prepare-progressive-images`) progressive image version path `/images/foobar-OptimusIMG-progressive.jpeg`,
+    - change `data-optimus-lazy-src` (or `data-optimus-lazy-srcset`, or both) from eg. `/images/foobar.jpeg` to the (generated with `npx prepare-progressive-images`) progressive image version path `/images/foobar-OptimusIMG-progressive.jpeg`,
     OptimusIMG will then handle the progressive load functionality under the hood automatically both for single images and carousels which are lazily loaded
 - else
-    - change `src` from eg. `/images/foobar.jpeg` to the (generated with `npx prepare-progressive-images`) progressive image version path `/images/foobar-OptimusIMG-progressive.jpeg`
+    - change `src` (or `srcset`, or both) from eg. `/images/foobar.jpeg` to the (generated with `npx prepare-progressive-images`) progressive image version path `/images/foobar-OptimusIMG-progressive.jpeg`
     - manually trigger `OptimusIMG.ProgressiveLoad.execute()` function whenever you load new images into view (eg. carousel image change event for carousels which are not utilizing OptimusIMG `LazyLoad` functionality, on document
     ready and ajax responses which load new images in case you are utilizing jQuery for that, on component init/mount/etc lifecycle event in case you are using eg. Angular, Vue.js, ReactJS, ..)
 
