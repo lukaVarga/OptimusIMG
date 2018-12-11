@@ -2,6 +2,7 @@ import { ILazyLoad, ILazyLoadCarouselInterval } from './interfaces/lazy_load.int
 import { consoleMessage } from './helpers/console.helpers';
 import ProgressiveLoad from './progressive_load';
 import { InjectCSS } from './inject_css';
+import { HtmlElementsHelpers } from './helpers/html_elements.helpers';
 
 // For ensuring all events are properly cleared from whichever instance of LazyLoad, eg. if user does new LazyLoad(); multiple times
 let cachedLazyLoadRef: LazyLoad;
@@ -169,12 +170,25 @@ export default class LazyLoad {
     }
 
     private addLoadedPropertiesToImage(image: HTMLImageElement): void {
-        const LAZY_SRC: string = image.getAttribute('data-optimus-lazy-src') as string;
+        const LAZY_SRC: string | null = image.getAttribute('data-optimus-lazy-src');
+        const LAZY_SRCSET: string | null = image.getAttribute('data-optimus-lazy-srcset');
 
         // To prevent firing multiple load events for image
-        if (LAZY_SRC !== image.src) {
-            image.src = LAZY_SRC;
+        if (LAZY_SRC !== image.getAttribute('src') || LAZY_SRCSET !== image.getAttribute('srcset')) {
+            if (LAZY_SRC) {
+                image.src = LAZY_SRC;
+            }
+
+            if (LAZY_SRCSET) {
+                image.srcset = LAZY_SRCSET;
+            }
+
             image.setAttribute('data-optimus-loaded', 'true');
+
+            (HtmlElementsHelpers.getSiblings(image, 'source[data-optimus-lazy-srcset]') as HTMLSourceElement[])
+              .forEach((imageSource: HTMLSourceElement) => {
+                imageSource.srcset = imageSource.getAttribute('data-optimus-lazy-srcset') as string;
+            });
         }
 
         ProgressiveLoad.loadProgressiveImage(image);
