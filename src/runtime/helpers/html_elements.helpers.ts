@@ -18,7 +18,7 @@ export class HtmlElementsHelpers {
         return [];
     }
 
-    public static wrapImage(image: HTMLImageElement, className: string): HTMLElement {
+    public static wrapImage(image: HTMLImageElement | HTMLPictureElement, className: string): HTMLElement {
         const WRAPPER: HTMLElement = document.createElement('div');
         WRAPPER.className = className;
         const PARENT: Node = image.parentNode as Node;
@@ -28,7 +28,7 @@ export class HtmlElementsHelpers {
         return WRAPPER;
     }
 
-    public static unwrapImage(image: HTMLImageElement): HTMLImageElement | undefined {
+    public static unwrapImage(image: HTMLImageElement | HTMLPictureElement): HTMLImageElement | HTMLPictureElement | undefined {
         const WRAPPER: HTMLElement = image.parentElement as HTMLElement;
 
         if (WRAPPER.classList.contains(PROGRESSIVE_IMAGE_CONFIG.wrapperClassName)) {
