@@ -43,93 +43,152 @@ describe('LazyLoad', () => {
 
     describe('default configuration', () => {
         describe('images', () => {
-            beforeEach(() => {
-                document.body.innerHTML =
-                    '<img id="image-0" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
-                    '<img id="image-1" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
-                    '<img id="image-2" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
-                    '<img id="image-3" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
-            });
+            const IMG_SRC_EXAMPLE: string =
+              '<img id="image-0" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+              '<img id="image-1" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+              '<img id="image-2" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+              '<img id="image-3" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />';
 
-            afterEach(() => {
-                document.removeEventListener = REMOVE_EVENT_LISTENER;
-                document.addEventListener = ADD_EVENT_LISTENER;
-            });
+            const IMG_SRCSET_EXAMPLE: string =
+              '<img id="image-0" class="optimusIMG" data-optimus-lazy-srcset="https://www.foo.bar/img0.jpeg" />' +
+              '<img id="image-1" class="optimusIMG" data-optimus-lazy-srcset="https://www.foo.bar/img1.jpeg" />' +
+              '<img id="image-2" class="optimusIMG" data-optimus-lazy-srcset="https://www.foo.bar/img2.jpeg" />' +
+              '<img id="image-3" class="optimusIMG" data-optimus-lazy-srcset="https://www.foo.bar/img3.jpeg" />' +
+              '<img id="image-4" class="optimusIMG" srcset="https://www.foo.bar/img3.jpeg" />';
 
-            test('images near or in view get loaded immediately', () => {
-                const IMG_0: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
-                const IMG_1: HTMLImageElement = document.getElementById('image-1') as HTMLImageElement;
-                const IMG_2: HTMLImageElement = document.getElementById('image-2') as HTMLImageElement;
-                const IMG_3: HTMLImageElement = document.getElementById('image-3') as HTMLImageElement;
+            const PICTURE_SRCSET_EXAMPLE: string =
+              '<picture id="picture-0">' +
+              ' <source data-optimus-lazy-srcset="https://www.foo.bar/img0-small.jpeg">' +
+              ' <source data-optimus-lazy-srcset="https://www.foo.bar/img0-large.jpeg">' +
+              ' <img id="image-0" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img0.jpeg" />' +
+              '</picture>' +
+              '<picture id="picture-1">' +
+              ' <source data-optimus-lazy-srcset="https://www.foo.bar/img1-small.jpeg">' +
+              ' <source data-optimus-lazy-srcset="https://www.foo.bar/img1-large.jpeg">' +
+              ' <img id="image-1" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img1.jpeg" />' +
+              '</picture>' +
+              '<picture id="picture-2">' +
+              ' <source data-optimus-lazy-srcset="https://www.foo.bar/img2-small.jpeg">' +
+              ' <source data-optimus-lazy-srcset="https://www.foo.bar/img2-large.jpeg">' +
+              ' <source srcset="https://www.foo.bar/img2-large.jpeg" data-optimus-lazy-srcset="https://www.foo.bar/img2-large.jpeg">' +
+              ' <img id="image-2" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img2.jpeg" />' +
+              '</picture>' +
+              '<picture id="picture-3">' +
+              ' <source data-optimus-lazy-srcset="https://www.foo.bar/img3-small.jpeg">' +
+              ' <source data-optimus-lazy-srcset="https://www.foo.bar/img3-large.jpeg">' +
+              ' <img id="image-3" class="optimusIMG" data-optimus-lazy-src="https://www.foo.bar/img3.jpeg" />' +
+              '</picture>';
 
-                IMG_0.getBoundingClientRect = jest.fn().mockReturnValue({top: -500, bottom: 350});
-                IMG_1.getBoundingClientRect = jest.fn().mockReturnValue({top: 350, bottom: 500});
-                IMG_2.getBoundingClientRect = jest.fn().mockReturnValue({top: 800, bottom: 1000});
-                IMG_3.getBoundingClientRect = jest.fn().mockReturnValue({top: 2000, bottom: 2500});
-
-                new LazyLoad();
-
-                expect(IMG_0.src).toEqual('https://www.foo.bar/img0.jpeg');
-                expect(IMG_1.src).toEqual('https://www.foo.bar/img1.jpeg');
-                expect(IMG_2.src).toEqual('https://www.foo.bar/img2.jpeg');
-                expect(IMG_3.src).toEqual('');
-            });
-
-            test('scroll event listener gets added', () => {
-                document.addEventListener = jest.fn();
-
-                new LazyLoad();
-
-                expect(document.addEventListener).toBeCalledWith('scroll', expect.any(Function), {passive: true});
-            });
-
-            test('scroll event listener does not get duplicated', () => {
-                const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
-                const LAZY_LOAD: LazyLoad = new LazyLoad();
-                LAZY_LOAD.execute();
-                LAZY_LOAD.execute();
-                LAZY_LOAD.execute();
-                new LazyLoad();
-                new LazyLoad();
-
-                IMAGES.forEach((img: HTMLImageElement) => {
-                    img.removeAttribute('data-optimus-loaded');
-                    img.getBoundingClientRect = jest.fn().mockReturnValue({top: 0, bottom: 0});
+            [
+                {body: IMG_SRC_EXAMPLE, property: 'src', example: 'img src'},
+                {body: IMG_SRCSET_EXAMPLE, property: 'srcset', example: 'img srcset'},
+                {body: PICTURE_SRCSET_EXAMPLE, property: 'src', example: 'picture sources'},
+            ].forEach((args: {body: string, property: string, example: string}) => {
+                afterEach(() => {
+                    document.removeEventListener = REMOVE_EVENT_LISTENER;
+                    document.addEventListener = ADD_EVENT_LISTENER;
                 });
 
-                document.dispatchEvent(new Event('scroll'));
+                test(args.example + ' elements near or in view get loaded immediately', () => {
+                    document.body.innerHTML = args.body;
+                    const IMG_0: HTMLImageElement = document.getElementById('image-0') as HTMLImageElement;
+                    const IMG_1: HTMLImageElement = document.getElementById('image-1') as HTMLImageElement;
+                    const IMG_2: HTMLImageElement = document.getElementById('image-2') as HTMLImageElement;
+                    const IMG_3: HTMLImageElement = document.getElementById('image-3') as HTMLImageElement;
 
-                IMAGES.forEach((img: HTMLImageElement) => {
-                    // The function gets called once per image for top and once per image for bottom position
-                    expect(img.getBoundingClientRect).toHaveBeenCalledTimes(2);
+                    IMG_0.getBoundingClientRect = jest.fn().mockReturnValue({top: -500, bottom: 350});
+                    IMG_1.getBoundingClientRect = jest.fn().mockReturnValue({top: 350, bottom: 500});
+                    IMG_2.getBoundingClientRect = jest.fn().mockReturnValue({top: 800, bottom: 1000});
+                    IMG_3.getBoundingClientRect = jest.fn().mockReturnValue({top: 2000, bottom: 2500});
+
+                    new LazyLoad();
+
+                    expect(IMG_0[args.property]).toEqual('https://www.foo.bar/img0.jpeg');
+                    expect(IMG_1[args.property]).toEqual('https://www.foo.bar/img1.jpeg');
+                    expect(IMG_2[args.property]).toEqual('https://www.foo.bar/img2.jpeg');
+                    expect(IMG_3.getAttribute(args.property)).toEqual(null);
+
+                    if (args.example === 'picture sources') {
+                        const PICTURE_0: HTMLImageElement = document.getElementById('picture-0') as HTMLImageElement;
+                        const PICTURE_1: HTMLImageElement = document.getElementById('picture-1') as HTMLImageElement;
+                        const PICTURE_2: HTMLImageElement = document.getElementById('picture-2') as HTMLImageElement;
+                        const PICTURE_3: HTMLImageElement = document.getElementById('picture-3') as HTMLImageElement;
+
+                        [PICTURE_0, PICTURE_1, PICTURE_2].forEach((picture: HTMLPictureElement) => {
+                            picture.querySelectorAll('source').forEach((source: HTMLSourceElement) => {
+                                expect(source.srcset).not.toBe(null);
+                                expect(source.srcset).toEqual(source.getAttribute('data-optimus-lazy-srcset'));
+                            });
+                        });
+
+                        PICTURE_3.querySelectorAll('source').forEach((source: HTMLSourceElement) => {
+                            expect(source.srcset).toBe('null');
+                            expect(source.srcset).not.toEqual(source.getAttribute('data-optimus-lazy-srcset'));
+                        });
+                    }
+                });
+
+                test('scroll event listener gets added for ' + args.example, () => {
+                    document.body.innerHTML = args.body;
+                    document.addEventListener = jest.fn();
+
+                    new LazyLoad();
+
+                    expect(document.addEventListener).toBeCalledWith('scroll', expect.any(Function), {passive: true});
+                });
+
+                test('scroll event listener does not get duplicated for ' + args.example, () => {
+                    document.body.innerHTML = args.body;
+                    const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+                    const LAZY_LOAD: LazyLoad = new LazyLoad();
+                    LAZY_LOAD.execute();
+                    LAZY_LOAD.execute();
+                    LAZY_LOAD.execute();
+                    new LazyLoad();
+                    new LazyLoad();
+
+                    IMAGES.forEach((img: HTMLImageElement) => {
+                        img.removeAttribute('data-optimus-loaded');
+                        img.getBoundingClientRect = jest.fn().mockReturnValue({top: 0, bottom: 0});
+                    });
+
+                    document.dispatchEvent(new Event('scroll'));
+
+                    IMAGES.forEach((img: HTMLImageElement) => {
+                        // The function gets called once per image for top and once per image for bottom position
+                        expect(img.getBoundingClientRect).toHaveBeenCalledTimes(2);
+                    });
+                });
+
+                test(args.example + ' properties which werent loaded yet get analysed for loading on scrolling', () => {
+                    document.body.innerHTML = args.body;
+                    new LazyLoad();
+
+                    document.querySelectorAll = jest.fn().mockReturnValue(document.querySelectorAll('img'));
+
+                    document.dispatchEvent(new Event('scroll'));
+
+                    expect(document.querySelectorAll).toBeCalledWith('img.optimusIMG:not([data-optimus-loaded="true"])');
+
+                    // Clear mock
+                    document.querySelectorAll = QUERY_SELECTOR_ALL;
+                });
+
+                test('it works if it does not find any ' + args.example + ' elements on scrolling', () => {
+                    document.body.innerHTML = args.body;
+                    new LazyLoad();
+
+                    document.querySelectorAll = jest.fn().mockReturnValue(document.querySelectorAll('not-loaded-img'));
+
+                    document.dispatchEvent(new Event('scroll'));
+
+                    expect(document.querySelectorAll).toBeCalledWith('img.optimusIMG:not([data-optimus-loaded="true"])');
+
+                    // Clear mock
+                    document.querySelectorAll = QUERY_SELECTOR_ALL;
                 });
             });
 
-            test('images which werent loaded yet get analysed for loading on scrolling', () => {
-                new LazyLoad();
-
-                document.querySelectorAll = jest.fn().mockReturnValue(document.querySelectorAll('img'));
-
-                document.dispatchEvent(new Event('scroll'));
-
-                expect(document.querySelectorAll).toBeCalledWith('img.optimusIMG:not([data-optimus-loaded="true"])');
-
-                // Clear mock
-                document.querySelectorAll = QUERY_SELECTOR_ALL;
-            });
-
-            test('it works if it does not find any images on scrolling', () => {
-                new LazyLoad();
-
-                document.querySelectorAll = jest.fn().mockReturnValue(document.querySelectorAll('not-loaded-img'));
-
-                document.dispatchEvent(new Event('scroll'));
-
-                expect(document.querySelectorAll).toBeCalledWith('img.optimusIMG:not([data-optimus-loaded="true"])');
-
-                // Clear mock
-                document.querySelectorAll = QUERY_SELECTOR_ALL;
-            });
         });
 
         describe('carousels', () => {
