@@ -5,8 +5,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "bin": {
-    "prepare-progressive-images": "./bin/prepare_progressive_images.js",
-    "analyse-images": "./bin/analyse_images.js"
+    "analyse-images": "./bin/analyse_images.js",
+    "prepare-progressive-images": "./bin/prepare_progressive_images.js"
   },
   "scripts": {
     "build:javascript-version": "rimraf build && tsc",
@@ -14,7 +14,7 @@
     "test": "jest --coverage",
     "lint": "tslint --project \"tsconfig.lint.json\"",
     "report-coverage": "codecov",
-    "prepare-for-release": "rimraf build && rimraf dist && npm run lint && npm run test && npm run build:javascript-version && npm run build:production-runtime",
+    "prepare-for-release": "npm run lint && npm run test && npm run build:javascript-version && npm run build:production-runtime",
     "commit": "npm run lint && npm run test && git-cz",
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once"
@@ -44,7 +44,8 @@
   "files": [
     "src/**/*",
     "build/**/*",
-    "dist/**/*"
+    "dist/**/*",
+    "bin/**/*"
   ],
   "devDependencies": {
     "@types/jest": "^23.3.10",
