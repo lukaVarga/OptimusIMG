@@ -27,7 +27,7 @@ export async function prepareProgressiveImages(): Promise<boolean> {
 
         try {
             const IMAGE: Jimp = await Jimp.read(img);
-            await IMAGE.scale(0.2).blur(8).write(IMAGE_NAME);
+            await IMAGE.quality(70).scale(0.2).blur(8).write(IMAGE_NAME);
 
             console.log(consoleMessage('prepared image ' + IMAGE_NAME));
             return true;
