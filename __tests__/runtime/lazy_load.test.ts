@@ -2,6 +2,7 @@ import LazyLoad from '../../src/runtime/lazy_load';
 import { ILazyLoad } from '../../src/runtime/interfaces/lazy_load.interface';
 import { consoleMessage } from '../../src/runtime/helpers/console.helpers';
 import { InjectCSS } from '../../src/runtime/inject_css';
+import ProgressiveLoad from '../../src/runtime/progressive_load';
 /* tslint:disable no-unused-expression */
 describe('LazyLoad', () => {
     const QUERY_SELECTOR_ALL: any = document.querySelectorAll;
@@ -187,8 +188,32 @@ describe('LazyLoad', () => {
                     // Clear mock
                     document.querySelectorAll = QUERY_SELECTOR_ALL;
                 });
-            });
 
+                test(`it triggers progressive load once after low-res ${args.example} is fully loaded`, () => {
+                    document.body.innerHTML = args.body;
+                    const IMAGES: NodeListOf<HTMLImageElement> = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+                    new LazyLoad();
+
+                    const SPY: any = jest.spyOn(ProgressiveLoad, 'loadProgressiveImage');
+                    ProgressiveLoad.loadProgressiveImage = jest.fn();
+
+                    IMAGES.forEach((img: HTMLImageElement) => {
+                        img.removeAttribute('data-optimus-loaded');
+                        img.getBoundingClientRect = jest.fn().mockReturnValue({top: 0, bottom: 0});
+                    });
+
+                    expect(ProgressiveLoad.loadProgressiveImage).not.toHaveBeenCalled();
+
+                    IMAGES.forEach((img: HTMLImageElement) => {
+                        img.dispatchEvent(new Event('load'));
+                        img.dispatchEvent(new Event('load'));
+                        img.dispatchEvent(new Event('load'));
+                    });
+
+                    expect(ProgressiveLoad.loadProgressiveImage).toHaveBeenCalledTimes(IMAGES.length);
+                    SPY.mockRestore();
+                });
+            });
         });
 
         describe('carousels', () => {

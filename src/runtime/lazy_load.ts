@@ -191,6 +191,12 @@ export default class LazyLoad {
             });
         }
 
-        ProgressiveLoad.loadProgressiveImage(image);
+        function triggerProgressiveLoad(): void {
+            image.removeEventListener('load', triggerProgressiveLoad);
+            image.onload = null;
+            ProgressiveLoad.loadProgressiveImage(image);
+        }
+
+        image.addEventListener('load', triggerProgressiveLoad);
     }
 }
