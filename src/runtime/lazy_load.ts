@@ -193,10 +193,12 @@ export default class LazyLoad {
 
         function triggerProgressiveLoad(): void {
             image.removeEventListener('load', triggerProgressiveLoad);
+            image.removeEventListener('error', triggerProgressiveLoad);
             image.onload = null;
             ProgressiveLoad.loadProgressiveImage(image);
         }
 
         image.addEventListener('load', triggerProgressiveLoad);
+        image.addEventListener('error', triggerProgressiveLoad);
     }
 }
