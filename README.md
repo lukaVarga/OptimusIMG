@@ -28,7 +28,7 @@ The source is written in Typescript, while the `dist` and `build` files are comp
 ## Browser support
 OptimusIMG is supported in all major browsers which support ES5 (`IE >= 10`, `Chrome >= 23`, `Firefox >= 21`, `Edge`, `Safari >= 6`, `Opera >= 15`)
 
-## Useage
+## Usage
 Once you add OptimusIMG to your project (npm, submodule, or,
 when using only runtime optimisations, by linking minified js file for a specific version - https://unpkg.com/optimusimg@:version/dist/OptimusIMG.min.js,
 or for latest version - https://unpkg.com/optimusimg/dist/OptimusIMG.min.js),
