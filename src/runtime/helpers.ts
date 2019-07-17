@@ -1,5 +1,7 @@
-export function loadImageInBackground(url: string): Promise<boolean> {
-    return new Promise((resolve: (bool: true) => void, reject: (bool: false) => void): void => {
+import {consoleMessage} from './helpers/console.helpers';
+
+export function loadImageInBackground(url: string): Promise<boolean | string> {
+    return new Promise((resolve: (bool: true) => void, reject: (error: string) => void): void => {
         const IMAGE: HTMLImageElement = new Image();
 
         function removeListeners(): void {
@@ -13,7 +15,7 @@ export function loadImageInBackground(url: string): Promise<boolean> {
         }
 
         function handleOnError(): void {
-            reject(false);
+            reject(consoleMessage(`could not load image ${url} in background`));
             removeListeners();
         }
 

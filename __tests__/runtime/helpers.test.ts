@@ -17,7 +17,7 @@ describe('Helpers', () => {
         });
 
         test('it loads image in background and resolves promise', (done: any) => {
-            loadImageInBackground('src').then((result: boolean) => {
+            loadImageInBackground('src').then((result: boolean | string) => {
                 expect(result).toBe(true);
                 done();
             });
@@ -29,7 +29,7 @@ describe('Helpers', () => {
 
         test('it tries to load image in background and rejects promise if an error occurs', (done: any) => {
             loadImageInBackground('src').catch((result: boolean) => {
-                expect(result).toBe(false);
+                expect(result).toBe('OptimusIMG: could not load image src in background');
                 done();
             });
 

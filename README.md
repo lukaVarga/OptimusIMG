@@ -35,7 +35,7 @@ or for latest version - https://unpkg.com/optimusimg/dist/OptimusIMG.min.js),
 you can use OptimusIMG's functions for optimisation.
 
 ### Runtime useage
-OptimusIMG currently has three runtime branches - `HtmlElementsCheck`, `LazyLoad` and `ProgressiveLoad`.
+OptimusIMG currently has three runtime branches - `HtmlElementsCheck`, `LazyLoad` and `ProgressiveLoad`. It also exposes some image helpers.
 
 #### HtmlElementsCheck
 `HtmlElementsCheck` will output console warnings if it detects any images with the proper class which are not properly prepared for responsive development.
@@ -154,7 +154,7 @@ export class CarouselComponent implements OnInit {
 }
 ```
 
-### Loading OptimusIMG via cdn and executing functions
+#### Loading OptimusIMG via cdn and executing functions
 ```
 <script src="https://unpkg.com/optimusimg@2.3.0/dist/OptimusIMG.min.js"></script>
 <script>
@@ -167,6 +167,21 @@ export class CarouselComponent implements OnInit {
     OptimusIMG.ProgressiveLoad.execute();
 </script>
 ```
+
+#### Image Helpers
+OptimusIMG has some image helpers available for use, such as loading image in background with JS. To use the helper functions, you need to import the helper
+
+##### loadImageInBackground
+The helper function loads image in the background and returns a promise. The promise will resolve when the image is loaded, or reject when the image cannot be loaded.
+You can use it eg. to pre-load an image in JS (as, by default, most browsers will cache the image) before eg. injecting the image in the view. 
+```
+import { loadImageInBackground } from 'optimusimg/build/runtime/helpers';
+
+...
+loadImageInBackground('url-of-the-image-you-wish-to-load')
+...
+```
+
 
 ### Buildtime useage
 OptimusIMG comes with buildtime scripts. For example, OptimusIMG will prepare a progressive version of your images
