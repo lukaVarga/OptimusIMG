@@ -49,7 +49,9 @@ describe('prepareProgressiveImages', () => {
     beforeEach(() => {
         promptly.prompt = jest.fn()
             .mockResolvedValueOnce('__tests__/buildtime/img-samples')
+            // @ts-ignore
             .mockResolvedValueOnce('n')
+            // @ts-ignore
             .mockResolvedValueOnce('Y');
 
         FileHelpers.findFilesInDir = jest.fn().mockReturnValue(IMG_SAMPLES);
@@ -116,7 +118,9 @@ describe('prepareProgressiveImages', () => {
 
             promptly.prompt = jest.fn()
                 .mockResolvedValueOnce('__tests__/buildtime/img-samples')
+                // @ts-ignore
                 .mockResolvedValueOnce('Y')
+                // @ts-ignore
                 .mockResolvedValueOnce('n');
 
             FileHelpers.findFilesInDir = jest.fn().mockReturnValue(IMG_SAMPLES);
@@ -143,7 +147,9 @@ describe('prepareProgressiveImages', () => {
 
             promptly.prompt = jest.fn()
                 .mockResolvedValueOnce('__tests__/buildtime/img-samples')
+                // @ts-ignore
                 .mockResolvedValueOnce('Y')
+                // @ts-ignore
                 .mockResolvedValueOnce('Y');
 
             FileHelpers.findFilesInDir = jest.fn().mockReturnValue(IMG_SAMPLES);

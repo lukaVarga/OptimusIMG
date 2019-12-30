@@ -153,13 +153,19 @@ describe('HtmlElementsCheck', () => {
         };
 
         describe('checkPictureElementPresence', () => {
+            const cachedQuerySelector: (selectors: any) => NodeListOf<any> = document.querySelectorAll;
+
             beforeEach(() => {
                 document.body.innerHTML =
                     '<div>' +
                     '  <img class="customClass" />' +
                     '</div>';
-                document.querySelectorAll = jest.fn((_selector: string) => [document.querySelector('img.customClass')]);
+                document.querySelectorAll = jest.fn((_selector: string) => [document.querySelector('img.customClass')]) as any;
                 console.warn = jest.fn();
+            });
+
+            afterEach(() => {
+                document.querySelectorAll = cachedQuerySelector;
             });
 
             describe('picture element not present', () => {
