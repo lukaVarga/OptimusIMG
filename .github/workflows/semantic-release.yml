@@ -44,7 +44,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
+        with:
+          directory: coverage
   semantic-release:
     runs-on: ubuntu-latest
     steps:
