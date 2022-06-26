@@ -50,13 +50,16 @@ jobs:
           npm ci
           npm run build:javascript-version
           npm run build:production-runtime
-      - name: Archive prod artifacts
+      - name: Archive build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: 'build-and-dist'
-          path: |
-            ./build
-            ./dist
+          name: build
+          path: ./build
+      - name: Archive dist artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: ./dist
   publish-coverage:
     needs: tests
     runs-on: ubuntu-latest
