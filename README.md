@@ -1,4 +1,5 @@
-[![Travis build](https://img.shields.io/travis/lukaVarga/OptimusIMG.svg?style=for-the-badge)](https://travis-ci.org/lukaVarga/OptimusIMG)
+[![Version Release](https://github.com/lukaVarga/OptimusIMG/actions/workflows/semantic-release.yml/badge.svg?style=for-the-badge)](https://github.com/lukaVarga/OptimusIMG/actions/workflows/semantic-release.yml)
+[![Publish Version](https://github.com/lukaVarga/OptimusIMG/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/lukaVarga/OptimusIMG/actions/workflows/npm-publish.yml)
 [![Codecov coverage](https://img.shields.io/codecov/c/github/lukaVarga/OptimusIMG.svg?style=for-the-badge)](https://codecov.io/gh/lukaVarga/OptimusIMG)
 
 
