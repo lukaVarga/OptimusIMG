@@ -3,7 +3,7 @@
 [![Codecov coverage](https://img.shields.io/codecov/c/github/lukaVarga/OptimusIMG.svg?style=for-the-badge)](https://codecov.io/gh/lukaVarga/OptimusIMG)
 
 
-[![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/optimusimg.svg?style=for-the-badge)](https://bundlephobia.com/result?p=optimusimg@2.2.0)
+[![npm bundle size (minified + gzip)](https://img.shields.io/bundlephobia/minzip/optimusimg.svg?style=for-the-badge)](https://bundlephobia.com/result?p=optimusimg)
 ![GitHub issues](https://img.shields.io/github/issues/lukaVarga/OptimusIMG.svg?style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/lukaVarga/OptimusIMG.svg?style=for-the-badge)
 
