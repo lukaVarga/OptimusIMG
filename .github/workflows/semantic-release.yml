@@ -21,7 +21,7 @@ jobs:
           node-version: 14
       - run: npm ci
       - run: npm run lint
-  run-tests:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -31,6 +31,7 @@ jobs:
       - run: npm ci
       - run: npm run test
   build-release:
+    needs: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,13 +42,13 @@ jobs:
       - run: npm run build:javascript-version
       - run: npm run build:production-runtime
   publish-coverage:
+    needs: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: codecov/codecov-action@v3
-        with:
-          directory: coverage
   semantic-release:
+    needs: build-release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
