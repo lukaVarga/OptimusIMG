@@ -20,4 +20,4 @@ jobs:
         with:
           node-version: 14
       - run: npm ci
-      - run: npm semantic-release
+      - run: npm run semantic-release
