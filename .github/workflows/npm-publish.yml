@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 14
       - run: npm ci
-      - run: npm prepare-for-release
+      - run: npm run prepare-for-release
 
   publish-npm:
     needs: build
