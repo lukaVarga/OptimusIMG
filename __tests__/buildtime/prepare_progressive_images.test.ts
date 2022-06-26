@@ -11,7 +11,6 @@ describe('prepareProgressiveImages', () => {
     const IMG_SAMPLES: string[] = [
         '__tests__/buildtime/img-samples/sample-1.jpg',
         '__tests__/buildtime/img-samples/sample-2.jpeg',
-        '__tests__/buildtime/img-samples/sample-3.gif',
         '__tests__/buildtime/img-samples/sample-4.png',
         '__tests__/buildtime/img-samples/sample-5.jpg',
         '__tests__/buildtime/img-samples/sample-6.jpg',

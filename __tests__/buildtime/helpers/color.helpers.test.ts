@@ -299,7 +299,7 @@ describe('ColorHelpers', () => {
             expect(ColorHelpers.xyz2lab({x: 0.5497, y: 0.2676, z: 0.7421})).toEqual({
                 L: 58.75151708604609,
                 a: 94.37585303808727,
-                b: -47.12541423897125,
+                b: -47.125414238971274,
             });
         });
 
@@ -333,15 +333,15 @@ describe('ColorHelpers', () => {
             expect(ColorHelpers.rgba2lab({r: 20, g: 150, b: 172, a: 1}, {r: 0, g: 0, b: 0})).toEqual({
                 L: 57.01450522003452,
                 a: -24.232935785517274,
-                b: -20.680006803549134,
+                b: -20.680006803549112,
             });
         });
 
         test('it converts rgb color #2 to xyz color space correctly', () => {
             expect(ColorHelpers.rgba2lab({r: 133, g: 0, b: 22, a: 1}, {r: 0, g: 0, b: 0})).toEqual({
-                L: 26.865877930910933,
-                a: 49.84281929749121,
-                b: 29.202769536552836,
+                L: 26.865877930910926,
+                a: 49.84281929749124,
+                b: 29.202769536552825,
             });
         });
 
@@ -355,9 +355,9 @@ describe('ColorHelpers', () => {
 
         test('it converts rgb color #4 to xyz color space correctly', () => {
             expect(ColorHelpers.rgba2lab({r: 81, g: 190, b: 20, a: 1}, {r: 0, g: 0, b: 0})).toEqual({
-                L: 68.47865365064216,
-                a: -57.45249237364075,
-                b: 65.68058200854303,
+                L: 68.47865365064217,
+                a: -57.45249237364081,
+                b: 65.68058200854304,
             });
         });
     });

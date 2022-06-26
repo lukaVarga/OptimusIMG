@@ -19,13 +19,13 @@ describe('FileHelpers', () => {
         afterEach(() => fs.restore());
 
         test('it recursively finds all files within a folder that match regex', () => {
-           fsExtra.outputFileSync('test-root/directory/image.png');
-           fsExtra.outputFileSync('test-root/directory/subdirectory/image.jpeg');
-           fsExtra.outputFileSync('test-root/directory/subdirectory/image.png');
-           fsExtra.outputFileSync('test-root/directory/subdirectory/subsubdirectory/image.gif');
+           fsExtra.outputFileSync('test-root/directory/image.png', '');
+           fsExtra.outputFileSync('test-root/directory/subdirectory/image.jpeg', '');
+           fsExtra.outputFileSync('test-root/directory/subdirectory/image.png', '');
+           fsExtra.outputFileSync('test-root/directory/subdirectory/subsubdirectory/image.gif', '');
 
-           fsExtra.outputFileSync('other-dir/subsubdirectory/image.gif');
-           fsExtra.outputFileSync('test-root/subsubdirectory/text.txt');
+           fsExtra.outputFileSync('other-dir/subsubdirectory/image.gif', '');
+           fsExtra.outputFileSync('test-root/subsubdirectory/text.txt', '');
 
            const RESULT: string[] = FileHelpers.findFilesInDir('test-root', FileHelpers.IMAGE_REGEX);
            const EXPECTED: string[] = ['test-root/directory/image.png', 'test-root/directory/subdirectory/image.jpeg',
@@ -64,6 +64,10 @@ describe('FileHelpers', () => {
 
         test('png image', () => {
             expect(FileHelpers.IMAGE_REGEX.test('foo.png')).toBe(true);
+        });
+
+        test('gif image', () => {
+            expect(FileHelpers.IMAGE_REGEX.test('foo.gif')).toBe(false);
         });
     });
 

@@ -9,9 +9,26 @@ describe('LazyLoad', () => {
     const REMOVE_EVENT_LISTENER: any = document.removeEventListener;
     const ADD_EVENT_LISTENER: any = document.addEventListener;
 
+    let originalInterval: typeof window['setInterval'];
+    let originalTimeout: typeof window['setTimeout'];
+    let originalClearInterval: typeof window['clearInterval'];
+    let originalClearTimeout: typeof window['clearTimeout'];
+
+    beforeEach(() => {
+        originalInterval = window.setInterval;
+        originalTimeout = window.setTimeout;
+        originalClearInterval = window.clearInterval;
+        originalClearTimeout = window.clearTimeout;
+    });
+
     afterEach(() => {
         document.removeEventListener = REMOVE_EVENT_LISTENER;
         document.addEventListener = ADD_EVENT_LISTENER;
+
+        window.setInterval = originalInterval;
+        window.setTimeout = originalTimeout;
+        window.clearInterval = originalClearInterval;
+        window.clearTimeout = originalClearTimeout;
     });
 
     describe('execute', () => {
@@ -123,7 +140,7 @@ describe('LazyLoad', () => {
                         });
 
                         PICTURE_3.querySelectorAll('source').forEach((source: HTMLSourceElement) => {
-                            expect(source.srcset).toBe('null');
+                            expect(source.srcset).toBe('');
                             expect(source.srcset).not.toEqual(source.getAttribute('data-optimus-lazy-srcset'));
                         });
                     }
@@ -292,6 +309,7 @@ describe('LazyLoad', () => {
                 });
 
                 test('interval gets added', () => {
+                    // @ts-ignore
                     window.setInterval = jest.fn();
 
                     new LazyLoad();
@@ -301,9 +319,9 @@ describe('LazyLoad', () => {
                 });
 
                 test('interval gets cleared once all images are loaded', () => {
-                    window.clearInterval = jest.fn();
-
                     jest.useFakeTimers();
+
+                    jest.spyOn(window, 'clearInterval');
 
                     new LazyLoad();
 

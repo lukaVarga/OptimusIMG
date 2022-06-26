@@ -66,7 +66,7 @@ describe('Helpers', () => {
             expect(await supportsWebp()).toBe(false);
         });
 
-        test('browser supports webp if image can be loaded in background', async (done: any) => {
+        test('browser supports webp if image can be loaded in background', (done: any) => {
             supportsWebp().then((isSupported: boolean) => {
                 expect(isSupported).toBe(true);
                 expect(window.optimus__supportsWebp).toBe(true);
@@ -79,7 +79,7 @@ describe('Helpers', () => {
             });
         });
 
-        test('browser does not support webp if the image cannot be loaded in background', async (done: any) => {
+        test('browser does not support webp if the image cannot be loaded in background', (done: any) => {
             supportsWebp().then((isSupported: boolean) => {
                 expect(isSupported).toBe(false);
                 expect(window.optimus__supportsWebp).toBe(false);

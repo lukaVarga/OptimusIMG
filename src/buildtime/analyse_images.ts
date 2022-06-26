@@ -63,7 +63,7 @@ export async function analyseImages(): Promise<boolean> {
                         throw Error('breaking JIMP scan loop');
                     }
                 });
-            } catch (e) {
+            } catch (e: any) {
                 if (!e.message.includes('breaking JIMP scan loop')) {
                     throw e;
                 }
