@@ -23,7 +23,7 @@ describe('analyseImages', () => {
 
     test('it asks user for images path', async () => {
         await analyseImages();
-        await expect(promptly.prompt).toBeCalledWith('Path to images folder (defaults to public/images): ',
+        expect(promptly.prompt).toBeCalledWith('Path to images folder (defaults to public/images): ',
             {default: 'public/images'});
     });
 
@@ -32,7 +32,7 @@ describe('analyseImages', () => {
         FileHelpers.findFilesInDir = jest.fn().mockReturnValue([]);
 
         await analyseImages();
-        await expect(console.log).toHaveBeenCalledWith(
+        expect(console.log).toHaveBeenCalledWith(
             consoleMessage('started analysing images, depending on the number of images and image sizes, this might take a while'));
     });
 
@@ -40,21 +40,21 @@ describe('analyseImages', () => {
         console.log = jest.fn();
         FileHelpers.findFilesInDir = jest.fn().mockReturnValue(IMG_SAMPLES);
         await analyseImages();
-        await expect(console.log).not
+        expect(console.log).not
             .toHaveBeenCalledWith(consoleMessage('analysing image __tests__/buildtime/img-samples/sample-6-OptimusIMG-progressive.jpg ...'));
     });
 
     test('it notifies user that it finished analysing images', async () => {
         console.log = jest.fn();
         await analyseImages();
-        await expect(console.log).toHaveBeenCalledWith(consoleMessage('finished analysing images'));
+        expect(console.log).toHaveBeenCalledWith(consoleMessage('finished analysing images'));
     });
 
     test('it notifies user to consider converting icons', async () => {
         console.warn = jest.fn();
         FileHelpers.findFilesInDir = jest.fn().mockReturnValue(IMG_SAMPLES);
         await analyseImages();
-        await expect(console.warn).toHaveBeenCalledWith(
+        expect(console.warn).toHaveBeenCalledWith(
             consoleMessage('consider converting __tests__/buildtime/img-samples/icon-sample-7.png icon' +
                 ' in SVG format for optimised load and display on different screens'));
     });
@@ -64,7 +64,7 @@ describe('analyseImages', () => {
         FileHelpers.findFilesInDir = jest.fn().mockReturnValue(['__tests__/buildtime/img-samples/sample-8-uncompressed.jpg']);
 
         await analyseImages();
-        await expect(console.warn).toHaveBeenCalledWith(
+        expect(console.warn).toHaveBeenCalledWith(
             consoleMessage('consider compressing __tests__/buildtime/img-samples/sample-8-uncompressed.jpg' +
                 ' to achieve a quicker webpage load time (BIG LOAD TIME EFFECT)'));
     });
@@ -74,7 +74,7 @@ describe('analyseImages', () => {
         FileHelpers.findFilesInDir = jest.fn().mockReturnValue(['__tests__/buildtime/img-samples/sample-5.jpg']);
 
         await analyseImages();
-        await expect(console.log).toHaveBeenCalledWith(
+        expect(console.log).toHaveBeenCalledWith(
             consoleMessage('consider further compression of __tests__/buildtime/img-samples/sample-5.jpg' +
                 ' to achieve a quicker webpage load time (MEDIUM LOAD TIME EFFECT)'));
     });
@@ -85,6 +85,6 @@ describe('analyseImages', () => {
         ColorHelpers.colorDiffCategory = jest.fn().mockImplementationOnce(() => { throw new Error('error'); });
 
         await analyseImages();
-        await expect(console.error).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalledTimes(1);
     });
 });

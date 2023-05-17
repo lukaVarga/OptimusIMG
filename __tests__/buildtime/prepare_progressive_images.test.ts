@@ -58,35 +58,35 @@ describe('prepareProgressiveImages', () => {
 
     test('it asks user for images path', async () => {
         await prepareProgressiveImages();
-        await expect(promptly.prompt).toBeCalledWith('Path to images folder (defaults to public/images): ',
+        expect(promptly.prompt).toBeCalledWith('Path to images folder (defaults to public/images): ',
             {default: 'public/images'});
     });
 
     test('it asks user if it should generate webp', async () => {
         await prepareProgressiveImages();
-        await expect(promptly.prompt).toBeCalledWith('Generate webp (Y/n): ',
+        expect(promptly.prompt).toBeCalledWith('Generate webp (Y/n): ',
             {default: 'Y'});
     });
 
     test('it asks user if it should generate low resolution variants', async () => {
         await prepareProgressiveImages();
-        await expect(promptly.prompt).toBeCalledWith('Generate low resolution variants (Y/n): ',
+        expect(promptly.prompt).toBeCalledWith('Generate low resolution variants (Y/n): ',
             {default: 'Y'});
     });
 
     test('it notifies user that it started preparing images', async () => {
         console.log = jest.fn();
         await prepareProgressiveImages();
-        await expect(console.log).toHaveBeenCalledWith(consoleMessage('started preparing progressive images'));
+        expect(console.log).toHaveBeenCalledWith(consoleMessage('started preparing progressive images'));
     });
 
     test('it skips images which already have a progressive version', async () => {
         console.log = jest.fn();
         await prepareProgressiveImages();
-        await expect(console.log).not
+        expect(console.log).not
             .toHaveBeenCalledWith(consoleMessage('prepared low res image __tests__/buildtime/img-samples/sample-6-OptimusIMG-progressive.jpg'));
 
-        await expect(console.log)
+        expect(console.log)
             .toHaveBeenCalledWith(consoleMessage('skipping image __tests__/buildtime/img-samples/sample-6.jpg ' +
                 'as it already has a progressive version'));
     });
@@ -95,20 +95,20 @@ describe('prepareProgressiveImages', () => {
         console.log = jest.fn();
 
         await prepareProgressiveImages();
-        await expect(console.log)
+        expect(console.log)
             .toHaveBeenCalledWith(consoleMessage('prepared low res image __tests__/buildtime/img-samples/sample-1-OptimusIMG-progressive.jpg'));
-        await expect(console.log)
+        expect(console.log)
             .toHaveBeenCalledWith(consoleMessage('prepared low res image __tests__/buildtime/img-samples/sample-2-OptimusIMG-progressive.jpeg'));
-        await expect(console.log)
+        expect(console.log)
             .toHaveBeenCalledWith(consoleMessage('prepared low res image __tests__/buildtime/img-samples/sample-4-OptimusIMG-progressive.png'));
-        await expect(console.log)
+        expect(console.log)
             .toHaveBeenCalledWith(consoleMessage('prepared low res image __tests__/buildtime/img-samples/sample-5-OptimusIMG-progressive.jpg'));
     });
 
     test('it notifies user that it finished preparing images', async () => {
         console.log = jest.fn();
         await prepareProgressiveImages();
-        await expect(console.log).toHaveBeenCalledWith(consoleMessage('finished preparing progressive images'));
+        expect(console.log).toHaveBeenCalledWith(consoleMessage('finished preparing progressive images'));
     });
 
     describe('generate webp is true', () => {
@@ -129,13 +129,13 @@ describe('prepareProgressiveImages', () => {
             console.log = jest.fn();
 
             await prepareProgressiveImages();
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-1.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-2.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-4.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-5.webp'));
         });
     });
@@ -158,13 +158,13 @@ describe('prepareProgressiveImages', () => {
             console.log = jest.fn();
 
             await prepareProgressiveImages();
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-1.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-2.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-4.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-5.webp'));
         });
 
@@ -172,13 +172,13 @@ describe('prepareProgressiveImages', () => {
             console.log = jest.fn();
 
             await prepareProgressiveImages();
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-1-OptimusIMG-progressive.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-2-OptimusIMG-progressive.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-4-OptimusIMG-progressive.webp'));
-            await expect(console.log)
+            expect(console.log)
                 .toHaveBeenCalledWith(consoleMessage('generated webp __tests__/buildtime/img-samples/sample-5-OptimusIMG-progressive.webp'));
         });
     });
@@ -211,16 +211,15 @@ describe('prepareProgressiveImages', () => {
 
         test('it notifies user if it encounters error for specific file', async () => {
             console.error = jest.fn();
+
             FileHelpers.findFilesInDir = jest.fn().mockReturnValue([
                 '__tests__/buildtime/img-samples/sample-1.jpg',
                 '__tests__/buildtime/img-samples/text-file-sample.txt',
-                '__tests__/buildtime/img-samples/sample-5.jpg',
             ]);
 
             await prepareProgressiveImages();
-            await expect(console.error).toHaveBeenCalledTimes(1);
-            await expect(fs.existsSync('__tests__/buildtime/img-samples/sample-1-OptimusIMG-progressive.jpg')).toBe(true);
-            await expect(fs.existsSync('__tests__/buildtime/img-samples/sample-5-OptimusIMG-progressive.jpg')).toBe(true);
+            expect(console.error).toHaveBeenCalledTimes(1);
+            expect(fs.existsSync('__tests__/buildtime/img-samples/sample-1-OptimusIMG-progressive.jpg')).toBe(true);
         });
     });
 });

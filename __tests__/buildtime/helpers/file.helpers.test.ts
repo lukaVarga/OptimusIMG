@@ -76,35 +76,35 @@ describe('FileHelpers', () => {
             const RESULT: IImageCompressionLevel =
                 await FileHelpers.imageCompressionLevel('__tests__/buildtime/img-samples/sample-2.jpeg');
 
-            await expect(RESULT).toBe('high-compression');
+            expect(RESULT).toBe('high-compression');
         });
 
         test('image with medium compression', async () => {
             const RESULT: IImageCompressionLevel =
                 await FileHelpers.imageCompressionLevel('__tests__/buildtime/img-samples/sample-5.jpg');
 
-            await expect(RESULT).toBe('medium-compression');
+            expect(RESULT).toBe('medium-compression');
         });
 
         test('image with low compression', async () => {
             const RESULT: IImageCompressionLevel =
                 await FileHelpers.imageCompressionLevel('__tests__/buildtime/img-samples/sample-9-uncompressed.png');
 
-            await expect(RESULT).toBe('low-compression');
+            expect(RESULT).toBe('low-compression');
         });
 
         test('tiny image with low compression', async () => {
             const RESULT: IImageCompressionLevel =
                 await FileHelpers.imageCompressionLevel('__tests__/buildtime/img-samples/sample-1.jpg');
 
-            await expect(RESULT).toBe(undefined);
+            expect(RESULT).toBe(undefined);
         });
 
         test('image with too big a size', async () => {
             const RESULT: IImageCompressionLevel =
                 await FileHelpers.imageCompressionLevel('__tests__/buildtime/img-samples/sample-8-uncompressed.jpg');
 
-            await expect(RESULT).toBe('low-compression');
+            expect(RESULT).toBe('low-compression');
         });
 
         test('user is warned if image cannot be found', async () => {
@@ -112,8 +112,8 @@ describe('FileHelpers', () => {
 
             const RESULT: IImageCompressionLevel = await FileHelpers.imageCompressionLevel('fake');
 
-            await expect(console.warn).toHaveBeenCalledWith(consoleMessage('image not found: fake'));
-            await expect(RESULT).toBe(undefined);
+            expect(console.warn).toHaveBeenCalledWith(consoleMessage('image not found: fake'));
+            expect(RESULT).toBe(undefined);
         });
     });
 });

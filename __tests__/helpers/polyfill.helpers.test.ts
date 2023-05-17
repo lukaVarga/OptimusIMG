@@ -11,7 +11,7 @@ describe('PolyfillHelpers', () => {
                 return true;
             });
 
-            await expect(NUMBERS).toEqual([0, 1, 2, 3]);
+            expect(NUMBERS).toEqual([0, 1, 2, 3]);
         });
     });
 });
