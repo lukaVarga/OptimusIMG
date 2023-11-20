@@ -38,7 +38,7 @@ export async function prepareProgressiveImages(): Promise<boolean> {
                     .replace(PROGRESSIVE_IMAGE_CONFIG.srcIdentifier, '')
                     .replace(FileHelpers.IMAGE_REGEX, '.webp');
 
-                await sharp(img).webp({ quality: 75, reductionEffort: 6 }).toFile(WEBP_NAME);
+                await sharp(img).webp({ quality: 75, effort: 6 }).toFile(WEBP_NAME);
                 newSize += ((fs.statSync(WEBP_NAME).size / 1024) / 1024);
                 newImages += 1;
 
