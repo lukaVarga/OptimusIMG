@@ -66,7 +66,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
       - name: Upload to Codecov
         uses: codecov/codecov-action@v3
   semantic-release:
@@ -79,7 +79,7 @@ jobs:
           node-version: 18
       - run: npm ci
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
       - run: npm run semantic-release
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
